@@ -1,1 +1,1 @@
-Directory to contain any modeling code for this project.
+The `model` directory contains code to run simulations or fit models. 
