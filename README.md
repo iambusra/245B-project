@@ -1,13 +1,7 @@
-# Project Template
+# Project Title
 
-This is an example of how a project repo should be organized.
+just making some changes here for the first commit
 
-It contains several subdirectories that will contain standard elements of almost every project:
-
-- `analysis`: This subdirectory will typically contain Python or R notebooks for making visualizations and statistical analyses. `/analysis/plots/` is the path to use when saving out `.pdf`/`.png` plots, a small number of which may be then polished and formatted for figures in a publication.
-- `data`:  This subdirectory is where you put the raw and processed data from behavioral experiments and computational simulations. These data serve as input to `analysis`. *Important: Before pushing any csv files containing human behavioral data to a public code repository, triple check that these data files are properly anonymized. This means no bare Worker ID's.*
-- `experiments`: If this is a project that will involve collecting human behavioral data, this is where you want to put the code to run the experiment. If this is a project that will involve evaluation of a computational model on a task, this is also where you want to put the task code (which imports the `model`).
-- `model`: If this is a cognitive modeling project, this is where you want to put code for running the model. If this project involves training neural networks, you would put training scripts in here.
 
 # Project documentation 
 
@@ -23,6 +17,4 @@ Once we are in the later stages of desigining a new human behavioral experiment 
 
 ## Manuscripts 
 
-When we are preparing to write up a manuscript (or a conference paper), we will start an [Overleaf](https://www.overleaf.com/) project. 
-This is where you will want to place your LaTeX source `.tex` files for your paper and your publication-ready figures as high-resolution `.pdf` files in the `figures` directory. 
-We typically format and fine-tune our figures using Adobe Illustrator.
+nothing to see here yet!
