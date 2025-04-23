@@ -12,7 +12,7 @@
   <!-- preloaded stimuli file -->
   <script src="stims.js"></script>
 
-  <!-- osf pipe plugin -->
+  <!-- osf thing here -->
   <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
 
   <!-- needless styling stuff for funzies -->
@@ -39,8 +39,10 @@
     // Initialize jsPsych
     const jsPsych = initJsPsych({
       show_progress_bar: true,
-      auto_update_progress_bar: false
-      // no on_finish needed right now
+      auto_update_progress_bar: false,
+      on_finish: function () {
+        jsPsych.data.displayData();
+      }
     });
 
     // Use preloaded stimuli and shuffle
@@ -111,36 +113,33 @@
       timeline.push(...readingTrials);
     }
 
-    // Thank-you screen and show data
+    // Thank-you screen
     const completion = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
         <div class="content">
           <h2>thank you.</h2>
           <p>the experiment is now complete.</p>
-          <p>press the SPACEBAR to see your reading time data (and save it to OSF).</p>
+          <p>press the SPACEBAR to see your reading time data.</p>
         </div>`,
-      choices: [' '],
-      on_finish: function () {
-        jsPsych.data.displayData();
-      }
+      choices: [' ']
     };
     timeline.push(completion);
 
-    // Save data to OSF
+    // Run the experiment
     const subject_id = jsPsych.randomization.randomID(10);
     const filename = `${subject_id}.csv`;
 
     const save_data = {
       type: jsPsychPipe,
       action: "save",
-      experiment_id: "kmddDMNYDI1g",
+      experiment_id: "kmddDMNYDI1g",  // your OSF experiment ID
       filename: filename,
       data_string: () => jsPsych.data.get().csv()
     };
+
     timeline.push(save_data);
 
-    // Run the experiment
     jsPsych.run(timeline);
   </script>
 </body>
