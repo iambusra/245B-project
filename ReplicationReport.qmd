@@ -1,0 +1,176 @@
+---
+title: "Replication of De Re De Dicto Ambiguities: Processing by Humans and LLMs by Büşra Marşan (2023, Unpublished MA Thesis, Boğaziçi University)"
+author: "still me"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+format:
+  html:
+    toc: true
+    toc_depth: 3
+---
+
+<!-- Replication reports should all use this template to standardize reporting across projects.  These reports will be public supplementary materials that accompany the summary report(s) of the aggregate results. -->
+
+## Introduction
+The original study investigated the processing difficulty of de re and de dicto readings in Turkish, using self-paced reading (SPR) to test whether formal semantic complexity correlates with real-time comprehension cost. The findings revealed a clear statistical difference between the baseline condition and all scope-disambiguated conditions (de re and de dicto), both in self-paced reading times and comprehension accuracy. In particular, de re readings showed elevated processing cost, though the difference between de re and de dicto was not consistently significant across all measures.
+
+In this follow-up experiment, I aim to replicate and extend these findings by testing surprisal effects induced by mismatches between disambiguating contexts and sentence types. Specifically, I will present readers with one of three context types (de re, de dicto, or ambiguous), followed by sentences that are either de re, de dicto, or ambiguous in scope. This 3 (context) × 3 (sentence type) design will hopefully allow me to test whether mismatches between contextual bias and sentence form incur processing cost, and whether ambiguous scope sentences show intermediate difficulty relative to matched and mismatched conditions.
+
+I treat the ambiguous form as an underspecified representation, one that does not resolve the scope preference. My prediction is that this underspecification will lead to intermediate processing difficulty in mismatching contexts. For example, following a de re context, I expect:
+de re < ambiguous < de dicto in terms of reading time.
+Conversely, after a de dicto context, I expect:
+de dicto < ambiguous < de re.
+
+I interpret these as gradated surprisal effects, where increased distance between contextual bias and sentence form results in increased processing effort.
+
+
+## Methods
+
+### Power Analysis
+The original study found a clear difference in processing cost between the baseline and scope-disambiguated conditions (de re and de dicto), with de re conditions in particular yielding significantly longer reading times and lower comprehension accuracy. The largest reading time increase relative to baseline was approximately 150 ms in the wide-scope de re condition, which I interpret as a medium effect size (Cohen’s d ≈ 0.5, f ≈ 0.25).
+
+To ensure sufficient power for detecting similar effects in the current 3 (context) × 3 (sentence type) design, I conducted a series of power analyses using the pwr package in R:
+- For a one-way ANOVA with f = 0.25, a minimum of 53 participants per group (159 total) is required to achieve 80% power.
+- For a two-sample t-test comparing matched and mismatched sentence-context pairs with d = 0.5, approximately 64 participants per group are needed.
+- For a multiple regression with three predictors (context, sentence type, and their interaction), assuming f² = 0.15, the required sample size is approximately 76 participants.
+
+To complement the frequentist estimates, I also conducted Bayesian simulations using the BayesFactor package. Simulating a between-group difference of d = 0.5 with 40 participants per group yielded a Bayes Factor of approximately 1.7, which is considered anecdotal evidence. I then simulated a full range of sample sizes (20–100 per group), observing that Bayes Factors reliably exceeded the BF > 3 threshold—often used as a benchmark for moderate evidence—only once group sizes reached approximately 80 participants per group. For instance, at n = 100, BFs exceeded 30,000, indicating decisive evidence.
+
+I also generated a power curve for the one-way ANOVA, confirming that 80% power is achieved at approximately n = 53 per group, validating my current target sample size.
+
+Based on these analyses, I plan to collect data from at least 159 participants, which will ensure 80% power to detect medium effects in my factorial design and provide robust evidence for or against the hypotheses across both frequentist and Bayesian analyses.
+
+
+### Planned Sample
+Based on my power analysis for a 3 (context) × 3 (sentence type) ANOVA with a medium effect size (f = 0.25), I plan to recruit at least 159 native speakers of Turkish. This sample size, approximately 53 participants per condition, is required to achieve 80% power to detect medium-sized effects in my 3 × 3 factorial design.
+
+Participants will be recruited from online platforms like Prolific. All participants must meet the following eligibility criteria:
+- Native proficiency in Turkish
+- Age 18 or older
+- No known history of language or cognitive disorders (I can ask this, right?)
+
+Participants will be pre-screened based on native speaker status, and informed consent will be obtained prior to participation. Each participant will complete a self-paced reading task followed by comprehension questions, with total participation time estimated at 20–30 minutes.
+
+I will continue data collection until the target sample size is reached. If participants are excluded based on pre-registered criteria (e.g., low comprehension accuracy), I will recruit replacements to ensure that the final analyzed sample meets the required power threshold.
+
+
+### Materials
+
+The materials for the original study consisted of short dialogues that served as context-setting prompts, followed by ambiguous target sentences designed to support de re, de dicto, or baseline interpretations. As described in the original article:
+
+"Each item consisted of a brief context followed by a single sentence presented word-by-word using a self-paced reading paradigm. The sentence was ambiguous between de re and de dicto interpretations and was followed by a comprehension question testing interpretation."
+In the present study, I closely follow this structure, using a dialogue-style disambiguating context followed by a target sentence and a comprehension question. However, I expand the original design by introducing three sentence types per item:
+- A de re sentence
+- A de dicto sentence
+- An ambiguous sentence (underspecified with respect to scope)
+
+Each of these sentence types is paired with one of three context types (de re, de dicto, or ambiguous), yielding a 3 (context) × 3 (sentence type) design. This allows us to test processing differences across fully matched, mismatched, and underspecified scope conditions. Sentence-level SPR data and comprehension responses are collected for each trial.
+
+All experimental items can be viewed at the following link:
+https://docs.google.com/spreadsheets/d/1orLcIpaoXw6fMNTo3unSmUd-grTe297EUqfvvMDqeN4/edit?usp=sharing 
+
+
+### Procedure	
+
+I followed the original study’s self-paced reading (SPR) procedure:
+
+“The experiment was presented using a self-paced reading (SPR) paradigm in which participants pressed the space bar to reveal each word of the sentence one at a time. Reading times were recorded for each region. After each sentence, a comprehension question appeared, and participants responded by pressing one of two labeled keys (‘yes’ or ‘no’).”
+
+In newer/current version, the dialogue context is shown in full, followed by the target sentence, presented word-by-word via SPR. A comprehension question then appears, and participants respond using keyboard input. All trials are randomized, and each participant sees only one sentence-context pairing per item (Latin Square design). The experiment is hosted online and takes approximately 20–30 minutes to complete.
+
+
+### Analysis Plan
+I follow the analysis strategy of the original study as closely as possible. As in the original design, the primary dependent measures are:
+- Self-paced reading times (SPRTs) at each word or region of the sentence,
+- Comprehension question response times, and
+- Comprehension accuracy.
+
+The original article states:
+“Reading times shorter than 50 ms or longer than 2000 ms were excluded. Participants were excluded if they scored below 50% accuracy on comprehension questions or gave the same response on every trial.”
+
+I adopt the same data cleaning and exclusion criteria:
+- Reading times < 50 ms or > 2000 ms are discarded.
+- Participants with < 50% comprehension accuracy or invariant comprehension responses are excluded.
+- Items with technical errors or missing data will also be removed.
+
+#### Key analysis of interest
+My primary analysis targets surprisal effects driven by the interaction between context type and sentence type. Specifically, I test whether mismatches between context and sentence scope result in longer reading times than matched conditions, and whether ambiguous forms yield intermediate processing cost.
+
+I will analyze critical region reading times using linear mixed-effects models (LMMs), with fixed effects for context, sentence type, and their interaction, and random intercepts for both participants and items. If justified by model fit, I will include by-participant and by-item random slopes.
+
+Comprehension question RTs and accuracy will be analyzed separately, using LMMs and logistic mixed-effects models respectively.
+
+#### Planned contrasts
+I will conduct planned comparisons using contrast coding to compare:
+- Matched vs. mismatched vs. ambiguous trials,
+- de re vs. de dicto sentences within each context type,
+- Gradient surprisal effects (e.g., de re < ambiguous < de dicto in de re contexts, and vice versa).
+
+#### Additional analyses
+I also plan to:
+- Conduct Bayesian model comparisons using Bayes Factors to evaluate evidence for surprisal effects,
+- Explore region-by-region RT patterns, particularly around the verb and object noun,
+- Report both raw and log-transformed RT analyses where appropriate.
+
+All analyses will be conducted in R using lme4, lmerTest, emmeans, and BayesFactor or brms.
+
+
+### Differences from Original Study
+
+The current experiment is a follow-up to an earlier study conducted by the same researcher. That original study has not been published (it is an unpublished MA thesis) but forms the foundation for the current design. As such, there is a high degree of continuity in both theoretical framing and methodology, and the two experiments may ultimately be analyzed together as part of a single research paper.
+
+There are, however, several key differences between the original and current studies:
+- Design: The original study used a 4-condition design that included a baseline and three types of ambiguous sentences (e.g., wide scope de re, narrow scope de re, de dicto). The current study uses a 3 (context) × 3 (sentence type) design that explicitly manipulates both disambiguating context and sentence form. This design allows for a more direct test of surprisal effects and gradient processing cost.
+- Materials: In the original study, the SPR sentence was always ambiguous. In the current study, the SPR sentence itself varies: participants may read a de re, de dicto, or ambiguous sentence. The comprehension questions remain structurally similar and are used to verify that participants processed the context as intended.
+- Sample size and analysis: The current study is more extensively powered, with a planned sample of 159 participants to ensure reliable detection of medium-sized effects across the 3 × 3 design. The original study had a smaller sample size. Additionally, while the original analysis was primarily frequentist, the current study also includes Bayesian model comparisons and more explicitly pre-registered contrasts.
+
+Despite these differences, the core hypothesis and processing measures remain the same, and no procedural differences are expected to meaningfully affect the replicability of the original findings. Instead, the expanded design provides a more detailed investigation of the surprisal effects suggested but not fully tested in the original experiment.
+
+### Methods Addendum (Post Data Collection)
+
+You can comment this section out prior to final report with data collection.
+
+#### Actual Sample
+  Sample size, demographics, data exclusions based on rules spelled out in analysis plan
+
+#### Differences from pre-data collection methods plan
+  Any differences from what was described as the original plan, or “none”.
+
+
+## Results
+
+
+### Data preparation
+
+Data preparation following the analysis plan.
+	
+```{r include=F}
+### Data Preparation
+
+#### Load Relevant Libraries and Functions
+
+#### Import data
+
+#### Data exclusion / filtering
+
+#### Prepare data for analysis - create columns etc.
+```
+
+### Confirmatory analysis
+
+The analyses as specified in the analysis plan.  
+
+*Side-by-side graph with original graph is ideal here*
+
+### Exploratory analyses
+
+Any follow-up analyses desired (not required).  
+
+## Discussion
+
+### Summary of Replication Attempt
+
+Open the discussion section with a paragraph summarizing the primary result from the confirmatory analysis and the assessment of whether it replicated, partially replicated, or failed to replicate the original result.  
+
+### Commentary
+
+Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
