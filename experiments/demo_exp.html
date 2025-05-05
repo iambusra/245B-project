@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Language Study</title>
+
+  <!-- Load jsPsych -->
+  <script src="https://unpkg.com/jspsych@7.3.3"></script>
+  <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" />
+
+  <!-- Plugins -->
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
+  <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
+
+  <!-- Stimuli file -->
+  <script src="demo_stims.js"></script>
+
+  <meta charset="UTF-8">
+
+  <!-- Style -->
+  <style>
+    #jspsych-progressbar-container {
+      background-color: #eee;
+      border-radius: 12px;
+      height: 20px;
+      margin: 20px auto;
+      width: 80%;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    }
+    #jspsych-progressbar-inner {
+      background: linear-gradient(90deg, #fd53ab 0%, #ee55ae 100%);
+      height: 100%;
+      border-radius: 12px;
+      transition: width 0.4s ease-in-out;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    const jsPsych = initJsPsych({
+      show_progress_bar: true,
+      auto_update_progress_bar: false
+    });
+
+    // LATIN SQUARE: one condition per item
+    const groupedByItem = {};
+    experimentStimuli.forEach(item => {
+      const id = item.item_id;
+      if (!groupedByItem[id]) groupedByItem[id] = [];
+      groupedByItem[id].push(item);
+    });
+
+    const selectedStimuli = Object.values(groupedByItem).map(variants => {
+      return jsPsych.randomization.sampleWithoutReplacement(variants, 1)[0];
+    });
+
+    const shuffledStimuli = jsPsych.randomization.shuffle(selectedStimuli);
+    const timeline = [];
+
+    // INSTRUCTIONS
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <div class="content">
+          <h2>Welcome</h2>
+          <p>You will read short dialogues, then a sentence one word at a time, followed by a comprehension question.</p>
+          <p>Press the <strong>SPACEBAR</strong> to begin.</p>
+        </div>`,
+      choices: [' ']
+    });
+
+    // CREATE TRIALS
+    function createTrial(item, index) {
+      const trial = [];
+
+      // 1. DIALOGUE
+      trial.push({
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `<p style="font-size: 20px; white-space: pre-line;">${item.dialogue}</p><p><br><em>Press SPACEBAR to continue</em></p>`,
+        choices: [' ']
+      });
+
+      // 2. FIXATION
+      trial.push({
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<p style="font-size: 32px;">+</p>',
+        choices: "NO_KEYS",
+        trial_duration: 500
+      });
+
+      // 3. SPR SENTENCE
+      item.sentence.forEach((word, i) => {
+        trial.push({
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: `<p style="font-size: 32px;">${word}</p>`,
+          choices: [' '],
+          data: {
+            type: "spr",
+            word: word,
+            word_number: i + 1,
+            sentence_index: index + 1,
+            item_id: item.item_id,
+            class: item.class,
+            condition: item.condition
+          },
+          on_finish: function(data) {
+            data.reading_time = data.rt;
+          },
+          on_start: function () {
+            jsPsych.setProgressBar((index + i / item.sentence.length) / shuffledStimuli.length);
+          }
+        });
+      });
+
+      // 4. COMPREHENSION QUESTION
+      trial.push({
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `<p>${item.comprehension_question}</p><p><strong>J</strong> = True, <strong>F</strong> = False</p>`,
+        choices: ['f', 'j'],
+        data: {
+          type: "comprehension",
+          item_id: item.item_id,
+          class: item.class,
+          condition: item.condition,
+          correct_response: item.expected_response
+        },
+        on_finish: function(data) {
+          const expected = data.correct_response.toLowerCase() === 't' ? 'j' : 'f';
+          data.response_time = data.rt;
+          data.response_correct = data.response === expected;
+          data.response_type = data.response === expected ? 'match' : 'mismatch';
+        }
+      });
+
+      return trial;
+    }
+
+    // ADD ALL TRIALS
+    shuffledStimuli.forEach((item, i) => {
+      timeline.push(...createTrial(item, i));
+    });
+
+    // END MESSAGE
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <div class="content">
+          <h2>Thank you!</h2>
+          <p>The experiment is complete.</p>
+          <p>Press SPACEBAR to view your data.</p>
+        </div>`,
+      choices: [' '],
+      on_finish: function () {
+        jsPsych.data.displayData();
+      }
+    });
+
+    // SAVE TO OSF
+    const subject_id = jsPsych.randomization.randomID(10);
+    const filename = `${subject_id}.csv`;
+
+    timeline.push({
+      type: jsPsychPipe,
+      action: "save",
+      experiment_id: "kmddDMNYDI1g",
+      filename: filename,
+      data_string: () => jsPsych.data.get().csv()
+    });
+
+    // RUN EXPERIMENT
+    jsPsych.run(timeline);
+  </script>
+</body>
+</html>
