@@ -1,4 +1,4 @@
-var stimuli = [
+var experimentStimuli = [
   {
     "class": "Consumption",
     "item_id": "içmek / to drink",
