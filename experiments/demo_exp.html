@@ -51,7 +51,15 @@
     });
 
     const selectedStimuli = Object.values(groupedByItem).map(variants => {
-      return jsPsych.randomization.sampleWithoutReplacement(variants, 1)[0];
+      const item = jsPsych.randomization.sampleWithoutReplacement(variants, 1)[0];
+
+    // ✅ Fix: ensure item.sentence is an array
+      if (!Array.isArray(item.sentence)) {
+        console.warn(`⚠️ Fixed malformed sentence in item_id: ${item.item_id}`);
+        item.sentence = (item.sentence || "").split(" ");
+      }
+
+      return item;
     });
 
     const shuffledStimuli = jsPsych.randomization.shuffle(selectedStimuli);
@@ -76,7 +84,7 @@
       // 1. DIALOGUE
       trial.push({
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: `<p style="font-size: 20px; white-space: pre-line;">${item.dialogue}</p><p><br><em>Press SPACEBAR to continue</em></p>`,
+        stimulus: `<p style="font-size: 20px; white-space: pre-line;">${item.dialogue}</p><p></p>`,
         choices: [' ']
       });
 
