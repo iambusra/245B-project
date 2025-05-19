@@ -12,11 +12,10 @@
   <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
 
   <!-- Stimuli file -->
-  <script src="demo_stims.js"></script>
+  <script src="experiment_stims.js"></script>
 
   <meta charset="UTF-8">
 
-  <!-- Style -->
   <style>
     #jspsych-progressbar-container {
       background-color: #eee;
@@ -42,28 +41,45 @@
       auto_update_progress_bar: false
     });
 
-    // LATIN SQUARE: one condition per item
-    const groupedByItem = {};
-    experimentStimuli.forEach(item => {
-      const id = item.item_id;
-      if (!groupedByItem[id]) groupedByItem[id] = [];
-      groupedByItem[id].push(item);
-    });
-
-    const selectedStimuli = Object.values(groupedByItem).map(variants => {
-      const item = jsPsych.randomization.sampleWithoutReplacement(variants, 1)[0];
-
-    // ✅ Fix: ensure item.sentence is an array
-      if (!Array.isArray(item.sentence)) {
-        console.warn(`⚠️ Fixed malformed sentence in item_id: ${item.item_id}`);
-        item.sentence = (item.sentence || "").split(" ");
-      }
-
-      return item;
-    });
-
-    const shuffledStimuli = jsPsych.randomization.shuffle(selectedStimuli);
     const timeline = [];
+
+    // 9 participant groups
+    const groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+    const participant_group = jsPsych.randomization.sampleWithoutReplacement(groups, 1)[0];
+
+    // context and SPR condition cycles
+    const context_cycle = ['amb', 'dere', 'dedicto'];
+    const spr_rotation_map = {
+      A: ['amb', 'dere', 'dedicto'],
+      B: ['dere', 'dedicto', 'amb'],
+      C: ['dedicto', 'amb', 'dere'],
+      D: ['amb', 'dere', 'dedicto'],
+      E: ['dere', 'dedicto', 'amb'],
+      F: ['dedicto', 'amb', 'dere'],
+      G: ['amb', 'dere', 'dedicto'],
+      H: ['dere', 'dedicto', 'amb'],
+      I: ['dedicto', 'amb', 'dere']
+    };
+    const spr_cycle = spr_rotation_map[participant_group];
+
+    // Convert dictionary to array of entries
+    const orderedItems = Object.entries(experimentStimuli).map(([item_id, data], index) => {
+      const context_condition = context_cycle[index % 3];
+      const spr_condition = spr_cycle[index % 3];
+
+      return {
+        item_id: item_id,
+        class: data.class,
+        context_condition: context_condition,
+        spr_condition: spr_condition,
+        dialogue: data[context_condition].dialogue,
+        comprehension_question: data[context_condition].question,
+        expected_response: data[context_condition].expected_response,
+        sentence: data[spr_condition].spr
+      };
+    });
+
+    const shuffledStimuli = jsPsych.randomization.shuffle(orderedItems);
 
     // INSTRUCTIONS
     timeline.push({
@@ -84,7 +100,10 @@
       // 1. DIALOGUE
       trial.push({
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: `<p style="font-size: 20px; white-space: pre-line;">${item.dialogue}</p><p></p>`,
+        stimulus: `
+          <div style="width: 80vw; max-width: 700px; margin: auto; font-size: 20px; white-space: pre-line; line-height: 1.5;">
+            ${item.dialogue}
+          </div>`,
         choices: [' ']
       });
 
@@ -109,7 +128,9 @@
             sentence_index: index + 1,
             item_id: item.item_id,
             class: item.class,
-            condition: item.condition
+            context_condition: item.context_condition,
+            spr_condition: item.spr_condition,
+            participant_group: participant_group
           },
           on_finish: function(data) {
             data.reading_time = data.rt;
@@ -123,13 +144,19 @@
       // 4. COMPREHENSION QUESTION
       trial.push({
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: `<p>${item.comprehension_question}</p><p><strong>F</strong> = False, <strong>J</strong> = True</p>`,
+        stimulus: `
+          <div style="width: 80vw; max-width: 700px; margin: auto; font-size: 24px; line-height: 1.5; text-align: center;">
+            <p>${item.comprehension_question}</p>
+            <p><strong>F</strong> = False, <strong>J</strong> = True</p>
+          </div>`,
         choices: ['f', 'j'],
         data: {
           type: "comprehension",
           item_id: item.item_id,
           class: item.class,
-          condition: item.condition,
+          context_condition: item.context_condition,
+          spr_condition: item.spr_condition,
+          participant_group: participant_group,
           correct_response: item.expected_response
         },
         on_finish: function(data) {
