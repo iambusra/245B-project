@@ -21,8 +21,7 @@ const trialStimuli = [
       "Demek",
       "Selin",
       "kolunu",
-      "kırdı",
-      ",",
+      "kırdı,",
       "kıyamam!"
     ],
     "question": "Selin geçirdiği bisiklet kazasında kolunu kırdı.",
