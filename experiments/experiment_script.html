@@ -168,6 +168,15 @@ timeline.push({
   on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens)
 });
 
+// === START TIMER ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '',
+  choices: "NO_KEYS",
+  trial_duration: 0,
+  on_start: () => jsPsych.data.addProperties({ start_time: Date.now() })
+});
+
 // === TRIAL BLOCK ===
 const shuffledTrialStimuli = jsPsych.randomization.shuffle(trialStimuli);
 shuffledTrialStimuli.forEach((item, i) => {
@@ -324,6 +333,18 @@ timeline.push({
 
 finalStimuli.slice(halfway).forEach((item, i) => timeline.push(...createTrial(item, halfway + i)));
 
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '',
+  choices: "NO_KEYS",
+  trial_duration: 0,
+  on_start: () => {
+    const start = jsPsych.data.get().values()[0].start_time;
+    const duration_sec = Math.round((Date.now() - start) / 1000);
+    jsPsych.data.addProperties({ experiment_duration_sec: duration_sec });
+  }
+});
+
 // exit survey
 timeline.push({
   type: jsPsychSurveyHtmlForm,
@@ -355,18 +376,17 @@ timeline.push({
 });
 
 
-// === END ===
+// === SAVING SCREEN ===
 timeline.push({
   type: jsPsychHtmlKeyboardResponse,
   stimulus: `
     <div class="content">
-      <h2>Thank you!</h2>
-      <p>The experiment is complete.</p>
-      <p>Press SPACEBAR to view your data.</p>
+      <h2>Saving your data...</h2>
+      <p>Please wait a moment.</p>
     </div>`,
-  choices: [' '],
-  on_start: () => jsPsych.setProgressBar(1),
-  on_finish: () => jsPsych.data.displayData()
+  choices: "NO_KEYS",
+  trial_duration: 1500,
+  on_start: () => jsPsych.setProgressBar(1)
 });
 
 // === SAVE ===
@@ -378,6 +398,18 @@ timeline.push({
   experiment_id: "kmddDMNYDI1g",
   filename: filename,
   data_string: () => jsPsych.data.get().csv()
+});
+
+// === FINAL THANK YOU SCREEN ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="content">
+      <h2>Thank you!</h2>
+      <p>Your data has been saved.</p>
+      <p>You may now close this window.</p>
+    </div>`,
+  choices: [' ']
 });
 
 jsPsych.run(timeline);
