@@ -346,6 +346,7 @@ timeline.push({
 });
 
 // exit survey
+// === EXIT SURVEY ===
 timeline.push({
   type: jsPsychSurveyHtmlForm,
   preamble: `<h2>Exit Survey</h2><p>Please answer the following questions before finishing the experiment.</p>`,
@@ -366,15 +367,30 @@ timeline.push({
   `,
   button_label: 'Submit',
   button_html: '<button class="styled-button">%choice%</button>',
-  on_finish: function(data) {
-    const responses = JSON.parse(data.responses);
-    if (!responses.native_langs || responses.native_langs.trim() === "") {
+  on_submit: function() {
+    const formData = new FormData(jsPsych.getDisplayElement().querySelector('form'));
+    const nativeLangs = formData.get("native_langs");
+
+    if (!nativeLangs || nativeLangs.trim() === "") {
       alert("Please enter at least one native language.");
-      jsPsych.currentTimelineNodeID(); // this just prevents advancing
+      return false; // prevent advancing
     }
+
+    return true;
   }
 });
 
+// === SURVEY SUBMITTED SCREEN ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="content">
+      <h2>Survey Submitted</h2>
+      <p>Your responses have been recorded.</p>
+      <p>Press the SPACEBAR to continue.</p>
+    </div>`,
+  choices: [' ']
+});
 
 // === SAVING SCREEN ===
 timeline.push({
@@ -411,6 +427,7 @@ timeline.push({
     </div>`,
   choices: [' ']
 });
+
 
 jsPsych.run(timeline);
 
