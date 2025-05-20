@@ -1,0 +1,108 @@
+import json
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load JSON from file
+with open('experiment_run_200.json', 'r') as f:
+    data = json.load(f)
+
+# Convert to DataFrame
+df = pd.DataFrame(data)
+
+# Debug: Show all column names
+print("COLUMNS IN DATAFRAME:")
+print(df.columns.tolist())
+
+# Add 'type' column if it's missing
+if 'type' not in df.columns:
+    df['type'] = None  # Fill missing column to prevent KeyError
+
+# Fill missing values with None explicitly
+df['type'] = df['type'].fillna(value=None)
+
+# === FIX STARTS HERE ===
+# Filter SPR and comprehension trials using the actual values in your JSON
+df_spr = df[(df['trial_type'] == 'html-keyboard-response') & (df['type'] == 'trial_spr')]
+df_comp = df[(df['trial_type'] == 'html-keyboard-response') & (df['type'] == 'trial_comprehension')]
+# === FIX ENDS HERE ===
+
+# Define placeholder values for missing fields to avoid KeyErrors in analysis
+for col in ['participant_group', 'spr_condition', 'context_condition']:
+    if col not in df.columns:
+        df[col] = 'unknown'
+
+# === ANALYSIS FUNCTIONS ===
+def analyze_spr_data(df):
+    condition_counts = df.groupby(['participant_group', 'spr_condition']).size().unstack(fill_value=0)
+    print("SPR condition counts per participant group:")
+    print(condition_counts)
+
+    total_conditions = df['spr_condition'].value_counts()
+    print("\nTotal occurrences of each SPR condition:")
+    print(total_conditions)
+
+    item_condition_dist = df.groupby(['item_id', 'spr_condition']).size().unstack(fill_value=0)
+    print("\nDistribution of item_id across SPR conditions:")
+    print(item_condition_dist)
+
+def analyze_comp_data(df):
+    condition_counts = df.groupby(['participant_group', 'context_condition']).size().unstack(fill_value=0)
+    print("\nContext condition counts per participant group:")
+    print(condition_counts)
+
+    total_conditions = df['context_condition'].value_counts()
+    print("\nTotal occurrences of each context condition:")
+    print(total_conditions)
+
+    accuracy = df.groupby('context_condition')['response_correct'].mean()
+    print("\nAccuracy by context condition:")
+    print(accuracy)
+
+def analyze_match_mismatch(df_spr, df_comp):
+    df_merged = pd.merge(
+        df_spr,
+        df_comp[['item_id', 'participant_group', 'context_condition']],
+        on=['item_id', 'participant_group'],
+        how='inner'
+    )
+    df_merged['match_condition'] = (df_merged['context_condition'] == df_merged['spr_condition']).map({True: 'matched', False: 'mismatched'})
+
+    match_counts = df_merged.groupby(['participant_group', 'match_condition']).size().unstack(fill_value=0)
+    print("\nMatched/Mismatched counts per participant group:")
+    print(match_counts)
+
+    total_match = df_merged['match_condition'].value_counts()
+    print("\nTotal occurrences of matched and mismatched conditions:")
+    print(total_match)
+
+    return df_merged
+
+# === RUN ANALYSES ===
+print("=== SPR Data Analysis ===")
+analyze_spr_data(df_spr)
+
+print("\n=== Comprehension Data Analysis ===")
+analyze_comp_data(df_comp)
+
+print("\n=== Matched/Mismatched Analysis ===")
+df_merged = analyze_match_mismatch(df_spr, df_comp)
+
+# === PLOTS ===
+if not df_merged.empty:
+    plt.figure(figsize=(10, 6))
+    sns.countplot(data=df_merged, x='spr_condition', hue='context_condition')
+    plt.title('Distribution of SPR and Context Conditions')
+    plt.savefig('condition_distribution.png')
+    plt.close()
+
+    plt.figure(figsize=(8, 6))
+    sns.countplot(data=df_merged, x='match_condition')
+    plt.title('Distribution of Matched vs Mismatched Conditions')
+    plt.savefig('match_mismatch_distribution.png')
+    plt.close()
+
+    df_merged.to_csv('analyzed_results.csv', index=False)
+    print("\nResults saved to 'analyzed_results.csv' and plots saved as PNGs.")
+else:
+    print("No merged data to analyze or plot.")
