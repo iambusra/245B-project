@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dil ve Anlam Araştırma Çalışması</title>
+  <!-- Load jsPsych -->
+  <script src="https://unpkg.com/jspsych@7.3.3"></script>
+  <link href="https://unpkg.com/jspsych@7.3.3/css/jspsych.css" rel="stylesheet" />
+
+  <!-- Plugins -->
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
+  <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.2"></script>
+
+  <!-- Stimuli -->
+  <script src="experiment_stims.js"></script>
+  <script src="fillers.js"></script>
+  <script src="trial_stims.js"></script>
+  <meta charset="UTF-8">
+
+  <style>
+    #jspsych-progressbar-container {
+      background-color: #eee;
+      border-radius: 12px;
+      height: 20px;
+      margin: 20px auto;
+      width: 80%;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    }
+    #jspsych-progressbar-inner {
+      background: linear-gradient(90deg, #fd53ab 0%, #ee55ae 100%);
+      height: 100%;
+      border-radius: 12px;
+      transition: width 0.4s ease-in-out;
+    }
+    .trial-label {
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+    .styled-button {
+      background: linear-gradient(90deg, #fd53ab 0%, #ee55ae 100%);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #custom-progress-bar-text {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+<script>
+const jsPsych = initJsPsych({
+  show_progress_bar: true,
+  auto_update_progress_bar: false
+});
+
+// ---- CHANGE PROGRESS BAR TEXT TO TURKISH ----
+// didnt work, gave up
+const timeline = [];
+
+// === GROUP LOGIC FIRST (for word counts) ===
+const groups = ['A','B','C','D','E','F','G','H','I'];
+const participant_group = jsPsych.randomization.sampleWithoutReplacement(groups, 1)[0];
+const context_cycle = ['amb', 'dere', 'dedicto'];
+const spr_rotation_map = {
+  A: ['amb', 'dere', 'dedicto'],
+  B: ['dere', 'dedicto', 'amb'],
+  C: ['dedicto', 'amb', 'dere'],
+  D: ['amb', 'dere', 'dedicto'],
+  E: ['dere', 'dedicto', 'amb'],
+  F: ['dedicto', 'amb', 'dere'],
+  G: ['amb', 'dere', 'dedicto'],
+  H: ['dere', 'dedicto', 'amb'],
+  I: ['dedicto', 'amb', 'dere']
+};
+const spr_cycle = spr_rotation_map[participant_group];
+const allTargetEntries = Object.entries(experimentStimuli);
+const sampledTargets = jsPsych.randomization.sampleWithoutReplacement(allTargetEntries, 15);
+const targetItems = sampledTargets.map(([item_id, data], index) => {
+  const context_condition = context_cycle[index % 3];
+  const spr_condition = spr_cycle[index % 3];
+  return {
+    type: "target",
+    item_id,
+    class: data.class,
+    context_condition,
+    spr_condition,
+    dialogue: data[context_condition].dialogue,
+    comprehension_question: data[context_condition].question,
+    expected_response: data[context_condition].expected_response,
+    sentence: data[spr_condition].spr
+  };
+});
+const sampledFillers = jsPsych.randomization.sampleWithoutReplacement(fillerStimuli, 15);
+const fillerItems = sampledFillers.map(f => ({
+  type: "filler",
+  item_id: f.item_id,
+  class: f.class,
+  context_condition: "filler",
+  spr_condition: "filler",
+  dialogue: f.dialogue,
+  comprehension_question: f.question,
+  expected_response: f.expected_response,
+  sentence: f.spr
+}));
+const shuffledTargets = jsPsych.randomization.shuffle(targetItems);
+const shuffledFillers = jsPsych.randomization.shuffle(fillerItems);
+const finalStimuli = interleaveBalanced(shuffledTargets, shuffledFillers);
+
+// === UNIFIED PROGRESS BAR ===
+let screenCount = 0;
+const totalTrialScreens = trialStimuli.reduce((acc, item) => acc + 2 + item.spr.length + 2, 0);
+const totalExpScreens = finalStimuli.reduce((acc, item) => acc + 2 + item.sentence.length + 1, 0);
+const totalScreens = totalTrialScreens + totalExpScreens;
+
+// === WELCOME ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="content" style="max-width: 700px; margin: auto; text-align: left;">
+      <h2>Deneye Hoş Geldiniz!</h2>
+      <p>
+        Bu deneyde, A ve B adlı iki kişi arasında geçen kısa diyalogları okuyacaksınız.
+      </p>
+      <ul>
+        <li>Her denemede, <b>A'nın söylediği ilk cümle</b> ve <b>B'nin verdiği cevap</b> size bir arada gösterilecek. Bu iki cümle, konuşmanın bağlamını oluşturur.</li>
+        <li>Ardından, <b>A'nın son olarak söylediği cümle</b> ekranda <strong>birer kelime halinde, sırayla</strong> gösterilecek. Her kelimeyi gördükten sonra devam etmek için <b>BOŞLUK TUŞU</b>na basmanız gerekecek.</li>
+        <li>Daha sonra, okuduğunuz diyaloğa dair bir <b>anlama sorusu</b> ile karşılaşacaksınız. Cevabınızı <b>F</b> (<i>yanlış</i>) veya <b>J</b> (<i>doğru</i>) tuşlarıyla verebilirsiniz.</li>
+      </ul>
+      <p>
+        Deneye başlamadan önce <strong>3 alıştırma denemesi</strong> yapılacaktır. Alıştırmalarda, her sorudan sonra doğru cevabı göreceksiniz; bu sadece alıştırma aşamasına özeldir. Asıl deneyde ise doğru yanıt gösterilmeyecek.
+      </p>
+      <p>
+        Alıştırmalardan sonra asıl deneye geçilecektir. Deney toplamda yaklaşık <strong>10-15 dakika</strong> sürecektir.
+      </p>
+      <p>
+        <b>Devam etmek için bir sonraki ekranda yer alan onam formunu okuyup onaylamanız gerekmektedir.</b>
+      </p>
+      <p>
+        İstediğiniz anda katılımınızı sonlandırabilirsiniz. Katılım tamamen gönüllüdür.
+      </p>
+      <p style="margin-top:24px;">
+        Başlamak için <b>BOŞLUK TUŞU</b>na basınız.
+      </p>
+    </div>
+  `,
+  choices: [' '],
+  on_start: () => jsPsych.setProgressBar(0)
+});
+
+
+// === CONSENT FORM ===
+timeline.push({
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+    <div class="content" style="text-align: left; max-width: 800px; margin: auto; font-size: 15px;">
+      <h2>Stanford Üniversitesi Araştırma Onam Formu</h2>
+      <p><i>(Deneye başlamak için sayfanın sonundaki 'Devam Et' tuşuna tıklayarak bu formu onaylamalısınız.)</i></p>
+      <p><strong>Onay Tarihi:</strong> 18 Ekim 2024<br>
+         <strong>Son Geçerlilik Tarihi:</strong> 30 Eylül 2025</p>
+      <p><strong>Protokol Direktörü:</strong> Robert Hawkins<br>
+         <strong>Protokol Başlığı:</strong> Doğal görsel - işitsel bağlamlarda iletişim ve sosyal biliş<br>
+         <strong>IRB#:</strong> 77226</p>
+      <h3>Araştırma Bilgi Formu</h3>
+      <p><strong>AÇIKLAMA:</strong> Dil ve iletişim ile ilgili bir araştırma çalışmasına katılmaya davetlisiniz. Araştırmanın amacı, Türkçe'yi akıcı olarak konuşan bir birey olarak doğal ortamlarda diğer insanlarla nasıl etkileşime girdiğinizi ve iletişim kurduğunuzu anlamaktır. Bu araştırma, ABD, İngiltere ve Kanada'dan katılımcılar da dahil olmak üzere Prolific platformu aracılığıyla yürütülecektir. Bu araştırmaya katılmaya karar verirseniz, bir veya daha fazla ortakla bir grupta iletişim oyunu oynayacaksınız.</p>
+      <p><strong>GÖREV SÜRESİ:</strong> Görev, Prolific'te belirtilen zaman kadar sürecektir. İstediğiniz zaman katılmayı reddedebilir veya çalışmadan çekilebilirsiniz.</p>
+      <p><strong>RİSKLER VE FAYDALAR:</strong> Eşinizin dikkati dağılırsa hayal kırıklığına uğrayabilir veya grubunuzdaki diğer katılımcılar görev için uygun olmayan bir mesaj gönderirse rahatsız olabilirsiniz. Bu riskleri azaltmak için etkileşimde bulunabileceğiniz diğer katılımcılara karşı saygılı olmanızı rica ediyoruz. Duygusal ağırlığı olan siyasi inançları tartışmanız veya bunlara meydan okumanız istendiğinde de rahatsız olabilirsiniz. Çalışma verileri, Stanford Üniversitesi standartlarına uygun olarak, gizlilik ihlali riskini en aza indirerek, güvenli bir şekilde saklanacaktır. Bu çalışma, insanların doğal ortamlarda nasıl iletişim kurdukları ve işbirliği yaptıkları konusundaki bilimsel anlayışımızı geliştirmektedir. Bu araştırma, ekip çalışmasında neyin yanlış gidebileceğine dair daha fazla içgörü sağlayabilir, bu engellerin üstesinden gelmek için potansiyel müdahaleler önerebilir ve insan ortaklarla işbirliği yapan yardımcı teknolojilerin geliştirilmesine yardımcı olabilir. Bu çalışmadan herhangi bir fayda alacağınızı garanti edemeyiz ve etmiyoruz, veya böyle bir vaatte bulunmuyoruz.</p>
+      <p><strong>ÖDEMELER:</strong> Bu deneye Prolific aracılığıyla katılıyorsanız, orada ilan edilen tutarda ödeme alacaksınız. Bu çalışmayı tamamlamazsanız, harcadığınız süreye göre orantılı ödeme alacaksınız. Ek olarak, talimatlarda açıklandığı gibi ekstra ödemelere hak kazanabilirsiniz.</p>
+      <p><strong>KATILIMCININ HAKLARI:</strong> Bu formu okuduysanız ve bu projeye katılmaya karar verdiyseniz, lütfen katılımınızın gönüllülük esasına dayandığını ve başka bir şekilde hak kazandığınız herhangi bir ceza veya fayda kaybı olmaksızın herhangi bir zamanda onayınızı geri çekme veya katılımı sonlandırma hakkına sahip olduğunuzu anlayın. Alternatif olarak bu çalışmaya katılmayabilirsiniz. Belirli soruları yanıtlamayı reddetme hakkına sahipsiniz. Bu araştırma çalışmasının sonuçları bilimsel veya mesleki toplantılarda sunulabilir veya bilimsel dergilerde yayınlanabilir. Çalışmadan kaynaklanan tüm yayınlanmış ve yazılı verilerde kişisel gizliliğiniz korunacaktır. Bilimsel normlara uygun olarak, bu çalışmadan elde edilen veriler, sizden ek onay alınmadan gelecekteki araştırmalar için (kişisel olarak tanımlayıcı bilgileri çıkardıktan sonra) kullanılabilir veya diğer araştırmacılarla paylaşılabilir.</p>
+      <p><strong>İLETİŞİM BİLGİLERİ:</strong> Sorular: Bu araştırma, prosedürleri, riskleri ve faydaları hakkında herhangi bir sorunuz, endişeniz veya şikayetiniz varsa, Protokol Direktörü Robert Hawkins (rdhawkins@stanford.edu, 217-549-6923) ile iletişime geçiniz.</p>
+      <p><strong>Bağımsız İletişim:</strong> Bu çalışmanın yürütülme şeklinden memnun değilseniz veya araştırma veya katılımcı olarak haklarınız hakkında herhangi bir endişeniz, şikayetiniz veya genel sorunuz varsa, lütfen araştırma ekibinden bağımsız biriyle 650-723-2480 numaralı telefondan veya 1-866-680-2906 numaralı telefondan ücretsiz olarak veya irbnonmed@stanford.edu adresinden e-posta yoluyla Stanford Kurumsal İnceleme Kurulu (IRB) ile iletişime geçin, ya da Stanford IRB, Stanford Üniversitesi, 1705 El Camino Real, Palo Alto, CA 94306 adresine posta gönderin. Kayıtlarınız için bu sayfanın bir kopyasını kaydedebilir veya yazdırabilirsiniz.</p>
+      <hr>
+      <p>Bu araştırmaya katılmayı kabul ediyorsanız, lütfen “Devam Et”e tıklayın.</p>
+    </div>
+  `,
+  choices: ['Devam Et'],
+  button_html: '<button class="styled-button">%choice%</button>'
+});
+
+// === TRIAL INTRO ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <h2 style="text-align: center;">Alıştırma Aşaması</h2>
+    <p style="text-align: center;">Şimdi 3 tane alıştırma denemesi göreceksiniz. Gerçek deney bu aşamayı tamamladıktan sonra başlayacak.</p>
+    <p style="text-align: center;">Devam etmek için <strong>BOŞLUK TUŞU</strong>na basınız.</p>
+  `,
+  choices: [' '],
+  on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens)
+});
+
+// === START TIMER ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '',
+  choices: "NO_KEYS",
+  trial_duration: 0,
+  on_start: () => jsPsych.data.addProperties({ start_time: Date.now() })
+});
+
+// === TRIAL BLOCK ===
+const shuffledTrialStimuli = jsPsych.randomization.shuffle(trialStimuli);
+shuffledTrialStimuli.forEach((item, i) => {
+  timeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div class="trial-label">Alıştırma Denemesi ${i + 1} / ${trialStimuli.length}</div>
+      <div style="width: 80vw; max-width: 700px; margin: auto; font-size: 20px; white-space: pre-line; line-height: 1.5;">
+      <br> <br>
+      <br> <br>
+        ${item.dialogue}
+      <br> <br>
+      <br> <br>
+      <br> <br>
+      <br> <br>
+      </div>`,
+    choices: [' '],
+    data: {
+      type: "trial_dialogue",
+      item_id: item.item_id,
+      class: item.class,
+      context_condition: "trial",
+      spr_condition: "trial",
+      participant_group
+    },
+    on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens),
+    on_finish: data => { data.reading_time = data.rt; }
+  });
+  timeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<p style="font-size: 32px;">+</p>',
+    choices: "NO_KEYS",
+    trial_duration: 500,
+    on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens)
+  });
+  item.spr.forEach(word => {
+    timeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `<p style="font-size: 32px;">${word}</p>`,
+      choices: [' '],
+      data: {
+        type: "trial_spr",
+        item_id: item.item_id,
+        class: item.class,
+        word: word,
+        context_condition: "trial",
+        spr_condition: "trial",
+        participant_group
+      },
+      on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens),
+      on_finish: data => { data.reading_time = data.rt; }
+    });
+  });
+  timeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="width: 80vw; max-width: 700px; margin: auto; font-size: 24px; text-align: center;">
+        <p>${item.question}</p>
+        <p><strong>F</strong> = Yanlış, <strong>J</strong> = Doğru</p>
+      </div>`,
+    choices: ['f', 'j'],
+    data: {
+      type: "trial_comprehension",
+      item_id: item.item_id,
+      class: item.class,
+      context_condition: "trial",
+      spr_condition: "trial",
+      participant_group,
+      correct_response: item.expected_response
+    },
+    on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens),
+    on_finish: data => {
+      const expected = data.correct_response.toLowerCase() === 't' ? 'j' : 'f';
+      data.response_correct = data.response === expected;
+      data.response_time = data.rt;
+    }
+  });
+  timeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: () => {
+      const last = jsPsych.data.get().last(1).values()[0];
+      return `<p style="font-size: 24px; text-align: center;">${
+        last.response_correct ? "✅ Doğru!" : "⚠️ Lütfen daha dikkatli okuyun! Bu soruya yanlış cevap verdiniz."
+      }</p><p style="text-align: center;">Devam etmek için BOŞLUK TUŞUna basınız.</p>`;
+    },
+    choices: [' '],
+    on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens)
+  });
+});
+
+// === MAIN EXPERIMENT INTRO ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <h2 style="text-align: center;">Alıştırma turunu tamamladınız.</h2>
+    <p style="text-align: center;">Şimdi gerçek deneye başlayacaksınız. Bu aşamada artık cevaplarınıza dair geri bildirim verilmeyecek.</p>
+    <p style="text-align: center;">Başlamak için <strong>BOŞLUK TUŞU</strong>na basınız.</p>
+  `,
+  choices: [' '],
+  on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens)
+});
+
+// ATTENTION CHECK HELPER
+function makeAttentionCheck(required_key, label) {
+  return {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div class="content">
+        <h2>Dikkat Kontrolü</h2>
+        <p>Bu ekranın amacı okuduklarınızı anlayıp anlamadığınızı kontrol etmektir.</p>
+        <p>Lütfen <strong>${label.toUpperCase()}</strong> tuşuna basınız.</p>
+      </div>`,
+    choices: [required_key, required_key.toUpperCase()],
+    trial_duration: 15000,
+    data: {
+      type: 'attention_check',
+      required_key: required_key,
+      label: label
+    },
+    on_finish: function(data) {
+      if (typeof data.response === "string") {
+        data.response = data.response.toLowerCase();
+      }
+      if (data.response === data.required_key) {
+        data.attention_check_result = "passed";
+      } else if (data.response == null) {
+        data.attention_check_result = "failed_timeout";
+      } else {
+        data.attention_check_result = "failed_wrong_key";
+      }
+    }
+  };
+}
+
+// === MAIN BLOCK (with halfway break) ===
+const halfway = Math.floor(finalStimuli.length / 2);
+const quarter = Math.floor(halfway / 2);
+const threequarters = halfway + Math.floor((finalStimuli.length - halfway) / 2);
+const createTrial = (item, index) => {
+  const trial = [];
+  trial.push({
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `<div style="width: 80vw; max-width: 700px; margin: auto; font-size: 20px; white-space: pre-line; line-height: 1.5;">${item.dialogue}</div>`,
+    choices: [' '],
+    data: {
+      type: "main_dialogue",
+      item_id: item.item_id,
+      class: item.class,
+      context_condition: item.context_condition,
+      spr_condition: item.spr_condition,
+      participant_group
+    },
+    on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens),
+    on_finish: data => { data.reading_time = data.rt; }
+  });
+  trial.push({
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: '<p style="font-size: 32px;">+</p>',
+    choices: "NO_KEYS",
+    trial_duration: 500,
+    on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens)
+  });
+  item.sentence.forEach(word => {
+    trial.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `<p style="font-size: 32px;">${word}</p>`,
+      choices: [' '],
+      data: {
+        type: "spr",
+        word: word,
+        item_id: item.item_id,
+        class: item.class,
+        context_condition: item.context_condition,
+        spr_condition: item.spr_condition,
+        participant_group
+      },
+      on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens),
+      on_finish: data => { data.reading_time = data.rt; }
+    });
+  });
+  trial.push({
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="width: 80vw; max-width: 700px; margin: auto; font-size: 24px; text-align: center;">
+        <p>${item.comprehension_question}</p>
+        <p><strong>F</strong> = Yanlış, <strong>J</strong> = Doğru</p>
+      </div>`,
+    choices: ['f', 'j'],
+    data: {
+      type: "comprehension",
+      item_id: item.item_id,
+      class: item.class,
+      context_condition: item.context_condition,
+      spr_condition: item.spr_condition,
+      participant_group,
+      correct_response: item.expected_response
+    },
+    on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens),
+    on_finish: data => {
+      const expected = data.correct_response.toLowerCase() === 't' ? 'j' : 'f';
+      data.response_time = data.rt;
+      data.response_correct = data.response === expected;
+    }
+  });
+  return trial;
+};
+
+// FIRST QUARTER
+finalStimuli.slice(0, quarter).forEach((item, i) => timeline.push(...createTrial(item, i)));
+
+// === FIRST ATTENTION CHECK ===
+timeline.push(makeAttentionCheck('f', 'f'));
+
+// SECOND QUARTER (to halfway)
+finalStimuli.slice(quarter, halfway).forEach((item, i) => timeline.push(...createTrial(item, quarter + i)));
+
+// === HALF-WAY BREAK ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="content">
+      <h2>Deneyin yarısını tamamladınız!</h2>
+      <p>Dilerseniz kısa bir mola verebilirsiniz.</p>
+      <p>Deney, 2 dakika sonra otomatik olarak devam edecek.</p>
+      <p>Daha erken devam etmek isterseniz <strong>BOŞLUK TUŞU</strong>na basınız.</p>
+    </div>`,
+  choices: [' '],
+  trial_duration: 110000,
+  on_start: () => jsPsych.setProgressBar(screenCount++ / totalScreens)
+});
+
+// THIRD QUARTER
+finalStimuli.slice(halfway, threequarters).forEach((item, i) => timeline.push(...createTrial(item, halfway + i)));
+
+// === SECOND ATTENTION CHECK ===
+timeline.push(makeAttentionCheck('j', 'j'));
+
+// LAST QUARTER (to end)
+finalStimuli.slice(threequarters).forEach((item, i) => timeline.push(...createTrial(item, threequarters + i)));
+
+// === END-OF-EXPERIMENT LOGIC ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '',
+  choices: "NO_KEYS",
+  trial_duration: 0,
+  on_start: () => {
+    const start = jsPsych.data.get().values()[0].start_time;
+    const duration_sec = Math.round((Date.now() - start) / 1000);
+    jsPsych.data.addProperties({ experiment_duration_sec: duration_sec });
+  }
+});
+
+// === EXIT SURVEY ===
+timeline.push({
+  type: jsPsychSurveyHtmlForm,
+  preamble: `<h2>Exit Survey</h2><p>Deneyi tamamlamak için lütfen aşağıdaki soruları cevaplayın.</p>`,
+  html: `
+    <label for="age">Yaş:</label><br>
+    <input name="age" type="number" min="10" max="120" style="width: 100%; padding: 6px;" required><br><br>
+    <label>Baskın El:</label><br>
+    <input type="radio" name="handedness" value="Sol" required> Sol<br>
+    <input type="radio" name="handedness" value="Sağ"> Sağ<br>
+    <input type="radio" name="handedness" value="Her İkisi"> Her İkisi<br><br>
+    <label for="native_langs">Anadil(ler):</label><br>
+    <input name="native_langs" type="text" placeholder="ör., Türkçe, Kürtçe" style="width: 100%; padding: 6px;" required><br><br>
+    <label for="fluent_langs">Diğer dil(ler):</label><br>
+    <input name="fluent_langs" type="text" placeholder="ör., İngilzce, Almanca" style="width: 100%; padding: 6px;"><br><br>
+  `,
+  button_label: 'Gönder',
+  button_html: '<button class="styled-button">%choice%</button>',
+  on_submit: function() {
+    const formData = new FormData(jsPsych.getDisplayElement().querySelector('form'));
+    const nativeLangs = formData.get("native_langs");
+    if (!nativeLangs || nativeLangs.trim() === "") {
+      alert("Lütfen en az bir anadil giriniz.");
+      return false; // prevent advancing
+    }
+    return true;
+  }
+});
+
+// === SURVEY SUBMITTED SCREEN ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="content">
+      <h2>Bilgi formu gönderildi.</h2>
+      <p>Cevaplarınız kaydedildi.</p>
+      <p>Devam etmek için BOŞLUK TUŞUna basınız.</p>
+    </div>`,
+  choices: [' ']
+});
+
+// === SAVING SCREEN ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="content">
+      <h2>Veriniz kaydediliyor...</h2>
+      <p>Lütfen bekleyiniz.</p>
+    </div>`,
+  choices: "NO_KEYS",
+  trial_duration: 1500,
+  on_start: () => jsPsych.setProgressBar(1)
+});
+
+// === SAVE ===
+const subject_id = jsPsych.randomization.randomID(10);
+const filename = `${subject_id}.csv`;
+timeline.push({
+  type: jsPsychPipe,
+  action: "save",
+  experiment_id: "vWYTm7iCzTRa",
+  filename: filename,
+  data_string: () => jsPsych.data.get().csv()
+});
+
+// === FINAL THANK YOU SCREEN ===
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
+    <div class="content">
+      <h2>Teşekkürler!</h2>
+      <p>Veriniz kaydedildi.</p>
+      <p>Bu pencereyi kapatabilirsiniz.</p>
+    </div>`,
+  choices: [' ']
+});
+jsPsych.run(timeline);
+function interleaveBalanced(aList, bList) {
+  const result = [];
+  let a = 0, b = 0, last = "", streak = 0;
+  while (a < aList.length || b < bList.length) {
+    const useA = (
+      (a < aList.length && (last !== "target" || streak < 2)) &&
+      (b >= bList.length || last === "filler" && streak >= 2 || Math.random() < 0.5)
+    );
+    if (useA && a < aList.length) {
+      result.push(aList[a++]); streak = (last === "target") ? streak + 1 : 1; last = "target";
+    } else if (b < bList.length) {
+      result.push(bList[b++]); streak = (last === "filler") ? streak + 1 : 1; last = "filler";
+    }
+  }
+  return result;
+}
+</script>
+</body>
+</html>
