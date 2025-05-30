@@ -53,8 +53,7 @@ const experimentStimuli = {
         "bir",
         "salata",
         "yemek",
-        "istiyor",
-        "."
+        "istiyor."
       ],
       "question": "Sibel öğle yemeğinde diyet programında olmayan bir şey yemek istiyor.",
       "expected_response": "F"
