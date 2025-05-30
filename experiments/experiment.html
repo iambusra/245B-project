@@ -58,10 +58,19 @@
 </head>
 <body>
 <script>
+  
 const jsPsych = initJsPsych({
   show_progress_bar: true,
   auto_update_progress_bar: false
 });
+
+// Get Prolific ID from URL and add to jsPsych data
+function getProlificId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('PROLIFIC_PID') || '';
+}
+jsPsych.data.addProperties({ prolific_id: getProlificId() });
+
 
 // ---- CHANGE PROGRESS BAR TEXT TO TURKISH ----
 // didnt work, gave up
@@ -129,6 +138,9 @@ timeline.push({
     <div class="content" style="max-width: 700px; margin: auto; text-align: left;">
       <h2>Deneye Hoş Geldiniz!</h2>
       <p>
+        Bu deneyi yalnızca bilgisayarınızdan görüntüleyebilirsiniz. Deney sitesi tablet, telefon gibi mobil cihazlarda çalışmayacaktır.
+      </p>
+      <p>
         Bu deneyde, A ve B adlı iki kişi arasında geçen kısa diyalogları okuyacaksınız.
       </p>
       <ul>
@@ -147,6 +159,9 @@ timeline.push({
       </p>
       <p>
         İstediğiniz anda katılımınızı sonlandırabilirsiniz. Katılım tamamen gönüllüdür.
+      </p>
+      <p>
+        Eğer bu deneye Prolific üzerinden katılıyorsanız, tamamlayıcı kodunuz verileriniz kaydedildikten sonra deneyin sonunda sizinle paylaşılacaktır.
       </p>
       <p style="margin-top:24px;">
         Başlamak için <b>BOŞLUK TUŞU</b>na basınız.
@@ -532,6 +547,8 @@ timeline.push({
     <div class="content">
       <h2>Teşekkürler!</h2>
       <p>Veriniz kaydedildi.</p>
+      <p>Prolific tamamlayıcı kodunuz: <strong>C1MZDFSJ</strong></p>
+      <p>Lütfen bu kodu Prolific'te ilgili kutuya yapıştırınız.</p>
       <p>Bu pencereyi kapatabilirsiniz.</p>
     </div>`,
   choices: [' ']

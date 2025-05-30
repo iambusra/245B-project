@@ -59,7 +59,7 @@ const experimentStimuli = {
       "expected_response": "F"
     },
     "dere": {
-      "dialogue": "A: Senin bize dün akşam yaptığın o salatayı bir türlü unutamıyorum! Muhteşemdi.\nB: Teşekkür ederim! Sibel kaçırdı diye üzülüyordum ama siz gittikten sonra uğrayıp salatan aldı biraz. Bugün öğlen yemek istiyormuş!",
+      "dialogue": "A: Senin bize dün akşam yaptığın o salatayı bir türlü unutamıyorum! Muhteşemdi.\nB: Teşekkür ederim! Sibel kaçırdı diye üzülüyordum ama siz gittikten sonra uğrayıp salata aldı biraz. Bugün öğlen yemek istiyormuş!",
       "spr": [
         "A:",
         "Sibel",
