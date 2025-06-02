@@ -305,7 +305,7 @@ const fillerStimuli = [
   {
     "item_id": "F18",
     "class": "filler",
-    "dialogue": "A: Candan bir oepra bestelese ne güzel olur. Sesinin ihtişamına öyle yakışır ki!\nB: Böyle düşünüyorsan sana çok güzel haberlerim var. Candan bir müzik kayıt şirketi ile anlaşmış.",
+    "dialogue": "A: Candan bir opera bestelese ne güzel olur. Sesinin ihtişamına öyle yakışır ki!\nB: Böyle düşünüyorsan sana çok güzel haberlerim var. Candan bir müzik kayıt şirketi ile anlaşmış.",
     "spr": [
       "A:",
       "Yoksa",
