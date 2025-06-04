@@ -16,7 +16,7 @@ library(tidybayes)
 # ========================
 # 2. Load and Combine All Participant Data
 # ========================
-csv_folder <- "osfstorage-archive"
+csv_folder <- "/Users/busramarsan/Documents/phd/methods/245B-project/analysis/osfstorage-archive"
 csv_files <- list.files(csv_folder, pattern = "\\.csv$", full.names = TRUE)
 
 read_participant_csv <- function(file) {
@@ -71,6 +71,10 @@ cat("Number to exclude:", length(to_exclude), "\n")
 
 clean_data <- all_data %>% filter(!(participant_id %in% to_exclude))
 clean_data %>% distinct(participant_id) %>% count()
+
+
+list.files(csv_folder, pattern = "\\.csv$", full.names = TRUE)
+
 
 # ========================
 # 4. Overview: Data Structure and Counts
@@ -464,17 +468,31 @@ table(comp_data_exp_trim$surprisal_type)
 
 comp_data_exp_trim$log_response_time <- log(comp_data_exp_trim$response_time + 1)
 
-bayes_rt <- brm(log_response_time ~ surprisal_type + (1|participant_id) + (1|item_id), data = comp_data_exp_trim, cores = 4, chains = 4, iter = 4000)
-summary(bayes_rt)
+library(brms)
 
-bayes_acc <- brm(response_correct ~ surprisal_type + (1|participant_id) + (1|item_id), data = comp_data_exp_trim, family = bernoulli(), cores = 4, chains = 4, iter = 4000)
-summary(bayes_acc)
+bayes_rt <- brm(
+  log_response_time ~ surprisal_type + (1|participant_id) + (1|item_id),
+  data = comp_data_exp_trim,
+  cores = 4, chains = 4, iter = 4000,
+  save_pars = save_pars(all = TRUE)   # <-- add this
+)
+
+bayes_acc <- brm(
+  response_correct ~ surprisal_type + (1|participant_id) + (1|item_id),
+  data = comp_data_exp_trim, family = bernoulli(),
+  cores = 4, chains = 4, iter = 4000,
+  save_pars = save_pars(all = TRUE)   # <-- add this
+)
+
 
 # Model comparison and posteriors
 library(bayestestR)
 bayesfactor_models(bayes_rt, null_model = update(bayes_rt, . ~ 1))
-hypothesis(bayes_rt, "surprisal_typeambiguous > surprisalt_typematched")
-hypothesis(bayes_rt, "surprisal_typemismatched > surprisal_typeambiguous")
+hypothesis(bayes_rt, "surprisal_typematched < 0")
+hypothesis(bayes_rt, "surprisal_typemismatched_opposite > 0")
+hypothesis(bayes_rt, "surprisal_typematched = 0")
+hypothesis(bayes_rt, "surprisal_typemismatched_opposite = surprisal_typematched")
+hypothesis(bayes_rt, "surprisal_typemismatched_opposite - surprisal_typematched > 0")
 plot(conditional_effects(bayes_rt), points = TRUE)
 plot(conditional_effects(bayes_acc), points = TRUE)
 
@@ -563,4 +581,65 @@ ggplot(spr_wordpos_summary, aes(x = word_position, y = median_rt, color = surpri
     color = "Condition"
   ) +
   theme_minimal()
+
+fixef(bayes_rt)
+
+
+
+library(dplyr)
+library(ggplot2)
+
+# Ensure context_condition and spr_condition are factors (for nicer labeling)
+spr_data_exp <- spr_data_exp %>%
+  mutate(
+    context_condition = factor(context_condition, levels = c("dere", "dedicto", "amb")),
+    spr_condition = factor(spr_condition, levels = c("dere", "dedicto", "amb"))
+  )
+
+# Summarize mean RT per word position, by context and SPR
+rt_by_context_spr <- spr_data_exp %>%
+  group_by(context_condition, spr_condition, word_position) %>%
+  summarize(
+    mean_rt = mean(reading_time, na.rm = TRUE),
+    se_rt = sd(reading_time, na.rm = TRUE)/sqrt(n()),
+    median_rt = median(reading_time, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Make the context_condition names pretty (optional)
+context_labels <- c(
+  dere = "de re context",
+  dedicto = "de dicto context",
+  amb = "ambiguous context"
+)
+
+# PLOT 1: Mean RT with error bars, faceted by context
+ggplot(rt_by_context_spr, aes(x = word_position, y = mean_rt, color = spr_condition)) +
+  geom_line(size = 1.1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = mean_rt - se_rt, ymax = mean_rt + se_rt), width = 0.1) +
+  facet_wrap(~ context_condition, labeller = as_labeller(context_labels)) +
+  labs(
+    title = "Mean Reading Time by Word Position and SPR (Faceted by Context)",
+    x = "Word Position",
+    y = "Mean Reading Time (ms)",
+    color = "SPR Condition"
+  ) +
+  theme_minimal()
+
+# PLOT 2: Median RT, faceted by context
+ggplot(rt_by_context_spr, aes(x = word_position, y = median_rt, color = spr_condition)) +
+  geom_line(size = 1.1) +
+  geom_point(size = 2) +
+  facet_wrap(~ context_condition, labeller = as_labeller(context_labels)) +
+  labs(
+    title = "Median Reading Time by Word Position and SPR (Faceted by Context)",
+    x = "Word Position",
+    y = "Median Reading Time (ms)",
+    color = "SPR Condition"
+  ) +
+  theme_minimal()
+
+
+getwd()
 
