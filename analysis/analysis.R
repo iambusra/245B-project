@@ -501,12 +501,274 @@ ggplot(comp_data_exp, aes(x = context_spr_combo, y = as.numeric(response_correct
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+# Clean comprehension RTs for context+spr combos
+comp_data_exp_trim <- comp_data_exp %>%
+  filter(response_time >= 50, response_time <= 10000)
 
-ggplot(comp_data_exp, aes(x = context_spr_combo, y = response_time, fill = context_condition)) +
+
+
+# Plot (trimmed)
+ggplot(comp_data_exp_trim, aes(x = context_spr_combo, y = response_time, fill = context_condition)) +
   geom_violin(trim = FALSE, alpha = 0.7) +
   stat_summary(fun = median, geom = "point", shape = 21, size = 2, fill = "white") +
-  labs(title = "Comprehension RT by Context + SPR Condition",
+  labs(title = "Comprehension RT by Context + SPR Condition (trimmed)",
        x = "Context + SPR Condition", y = "Response Time (ms)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+comp_summary_trim <- comp_data_exp_trim %>%
+  group_by(context_spr_combo) %>%
+  summarize(
+    accuracy = mean(response_correct == TRUE, na.rm = TRUE),
+    median_rt = median(response_time, na.rm = TRUE),
+    n = n()
+  )
+print(comp_summary_trim)
+
+
+# RT summary
+comp_summary_rt <- comp_data_exp_trim %>%
+  group_by(context_spr_combo, context_condition) %>%
+  summarize(
+    mean_rt = mean(response_time, na.rm = TRUE),
+    se_rt = sd(response_time, na.rm = TRUE) / sqrt(n()),
+    n = n()
+  ) %>%
+  mutate(
+    ci_rt = se_rt * 1.96 # 95% CI
+  )
+
+# Accuracy summary
+comp_summary_acc <- comp_data_exp_trim %>%
+  group_by(context_spr_combo, context_condition) %>%
+  summarize(
+    mean_acc = mean(response_correct == TRUE, na.rm = TRUE),
+    se_acc = sd(response_correct == TRUE, na.rm = TRUE) / sqrt(n()),
+    n = n()
+  ) %>%
+  mutate(
+    ci_acc = se_acc * 1.96 # 95% CI
+  )
+
+
+ggplot(comp_summary_rt, aes(x = context_spr_combo, y = mean_rt, fill = context_condition)) +
+  geom_col(alpha = 0.8) +
+  geom_errorbar(aes(ymin = mean_rt - ci_rt, ymax = mean_rt + ci_rt), width = 0.2) +
+  labs(title = "Comprehension RT (trimmed): Mean ± 95% CI",
+       x = "Context + SPR Condition", y = "Mean Response Time (ms)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+ggplot(comp_summary_acc, aes(x = context_spr_combo, y = mean_acc, fill = context_condition)) +
+  geom_col(alpha = 0.8) +
+  geom_errorbar(aes(ymin = mean_acc - ci_acc, ymax = mean_acc + ci_acc), width = 0.2) +
+  labs(title = "Comprehension Accuracy: Mean ± 95% CI",
+       x = "Context + SPR Condition", y = "Mean Accuracy") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+# LÜTFEN ÇALIŞ ARTIK İMDATTTTTTTT
+library(lme4)
+library(lmerTest)
+library(emmeans)
+
+# Filter to critical word positions if desired, e.g.:
+# spr_data_exp %>% filter(word_position == YOUR_CRITICAL_REGION)
+# Here, let's use all (or specify e.g. 5th word)
+
+lmm_spr <- lmer(reading_time ~ context_condition * spr_condition +
+                  (1 | participant_id) + (1 | item_id),
+                data = spr_data_exp)
+
+summary(lmm_spr)
+anova(lmm_spr)
+
+
+emm <- emmeans(lmm_spr, ~ context_condition * spr_condition)
+pairs(emm, simple = "each")
+
+
+library(lme4)
+# Use comp_data_exp_trim (or not trimmed if you prefer)
+
+glmm_acc <- glmer(response_correct ~ context_condition * spr_condition +
+                    (1 | participant_id) + (1 | item_id),
+                  data = comp_data_exp_trim, family = binomial)
+
+summary(glmm_acc)
+anova(glmm_acc, test = "Chisq")
+
+
+emm_acc <- emmeans(glmm_acc, ~ context_condition * spr_condition, type = "response")
+pairs(emm_acc, simple = "each")
+
+
+lmm_comp_rt <- lmer(response_time ~ context_condition * spr_condition +
+                      (1 | participant_id) + (1 | item_id),
+                    data = comp_data_exp_trim)
+
+summary(lmm_comp_rt)
+anova(lmm_comp_rt)
+
+
+
+
+library(emmeans)
+emm_df <- as.data.frame(emmeans(lmm_comp_rt, ~ context_condition * spr_condition))
+ggplot(emm_df, aes(x = spr_condition, y = emmean, fill = context_condition)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE), 
+                position = position_dodge(width=0.9), width=0.2) +
+  labs(y = "Estimated Mean RT (ms)", x = "SPR Condition", fill = "Context")
+
+
+
+glmm_acc2 <- glmer(response_correct ~ context_condition * spr_condition +
+                     (1 | participant_id) + (1 | item_id),
+                   data = comp_data_exp_trim, family = binomial,
+                   control = glmerControl(optimizer="bobyqa"))
+
+
+
+comp_data_exp_trim$combo <- paste(comp_data_exp_trim$context_condition, comp_data_exp_trim$spr_condition, sep="_")
+comp_data_exp_trim$surprisal_type <- dplyr::case_when(
+  # Matched: context and SPR are the same
+  comp_data_exp_trim$context_condition == comp_data_exp_trim$spr_condition ~ "matched",
+  # Opposite: de re vs de dicto
+  (comp_data_exp_trim$context_condition == "dere" & comp_data_exp_trim$spr_condition == "dedicto") |
+    (comp_data_exp_trim$context_condition == "dedicto" & comp_data_exp_trim$spr_condition == "dere") ~ "mismatched_opposite",
+  # If ambiguous is anywhere
+  comp_data_exp_trim$context_condition == "amb" | comp_data_exp_trim$spr_condition == "amb" ~ "ambiguous",
+  # All other mismatches
+  TRUE ~ "mismatched"
+)
+table(comp_data_exp_trim$surprisal_type)
+
+install.packages("brms")
+library(brms)
+# (Log-transform RT for stability)
+comp_data_exp_trim$log_response_time <- log(comp_data_exp_trim$response_time + 1)
+
+bayes_rt <- brm(
+  log_response_time ~ surprisal_type + (1|participant_id) + (1|item_id),
+  data = comp_data_exp_trim, cores = 4, chains = 4, iter = 4000
+)
+summary(bayes_rt)
+
+
+
+
+
+bayes_acc <- brm(
+  response_correct ~ surprisal_type + (1|participant_id) + (1|item_id),
+  data = comp_data_exp_trim, family = bernoulli(), cores = 4, chains = 4, iter = 4000
+)
+summary(bayes_acc)
+
+bayesfactor_models(bayes_rt, null_model = update(bayes_rt, . ~ 1))
+
+hypothesis(bayes_rt, "surprisal_typeambiguous > surprisalt_typematched")
+hypothesis(bayes_rt, "surprisal_typemismatched > surprisal_typeambiguous")
+
+# Plot posterior means and intervals
+plot(conditional_effects(bayes_rt), points = TRUE)
+plot(conditional_effects(bayes_acc), points = TRUE)
+
+library(tidybayes)
+library(ggplot2)
+add_epred_draws(comp_data_exp_trim, bayes_rt, re_formula = NA) %>%
+  ggplot(aes(x = surprisal_type, y = .epred)) +
+  stat_halfeye() +
+  labs(y = "Estimated log RT", x = "Condition")
+
+install.packages("tidybayes")
+library(emmeans)
+library(tidybayes)
+
+emmeans_rt <- emmeans(bayes_rt, ~ surprisal_type)
+summary(emmeans_rt)
+# Get posterior draws for plots
+emmeans_draws <- gather_emmeans_draws(emmeans_rt)
+library(ggplot2)
+ggplot(emmeans_draws, aes(x = surprisal_type, y = exp(.value))) +
+  stat_halfeye(.width = .95, fill = "skyblue") +
+  labs(y = "Estimated RT (ms)", x = "Condition", title = "Posterior distributions of mean RTs") +
+  theme_minimal()
+
+
+hypothesis(bayes_rt, "surprisal_typematched < 0 & surprisal_typemismatched_opposite > 0")
+
+
+# Pairwise contrasts on log scale, or back-transform if you want
+pairs(emmeans_rt)
+
+install.packages("bayestestR")
+library(bayestestR)
+
+bayesfactor_models(bayes_rt, null_model = update(bayes_rt, . ~ 1))
+
+
+library(ggplot2)
+library(tidybayes)
+emmeans_draws <- gather_emmeans_draws(emmeans_rt)
+
+ggplot(emmeans_draws, aes(x = surprisal_type, y = exp(.value))) +
+  stat_halfeye(.width = .95, fill = "skyblue") +
+  labs(y = "Estimated RT (ms)", x = "Condition", title = "Posterior distributions of mean RTs") +
+  theme_minimal()
+
+
+emmeans_acc <- emmeans(bayes_acc, ~ surprisal_type, type = "response")
+summary(emmeans_acc)
+
+
+acc_draws <- gather_emmeans_draws(emmeans_acc)
+ggplot(acc_draws, aes(x = surprisal_type, y = .value)) +
+  stat_halfeye(.width = .95, fill = "orchid") +
+  labs(y = "Predicted Accuracy", x = "Condition", title = "Posterior Accuracy by Condition") +
+  theme_minimal()
+
+
+
+
+# Get posterior summaries on probability scale
+emmeans_acc <- emmeans(bayes_acc, ~ surprisal_type, type = "response")
+
+# Tidy draws for plotting
+acc_draws <- gather_emmeans_draws(emmeans_acc)
+
+# Plot: posterior distributions of mean accuracy
+ggplot(acc_draws, aes(x = surprisal_type, y = .value, fill = surprisal_type)) +
+  stat_halfeye(.width = .95, point_interval = mean_qi, color = "black") +
+  labs(
+    title = "Posterior distributions of mean Accuracy",
+    x = "Condition", y = "Estimated Accuracy"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  theme_minimal()
+
+
+
+# RT (already on log scale, so exponentiate to get ms if you want)
+emmeans_rt_tbl <- summary(emmeans_rt)
+emmeans_rt_tbl$mean_ms <- exp(emmeans_rt_tbl$emmean)
+
+# Accuracy
+emmeans_acc_tbl <- summary(emmeans_acc)
+emmeans_acc_tbl
+
+
+
+
+rt_contrasts <- contrast(emmeans_rt, method = "pairwise")
+summary(rt_contrasts)
+
+acc_contrasts <- contrast(emmeans_acc, method = "pairwise")
+summary(acc_contrasts)
+
 

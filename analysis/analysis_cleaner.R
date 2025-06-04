@@ -505,3 +505,62 @@ rt_contrasts <- contrast(emmeans_rt, method = "pairwise")
 summary(rt_contrasts)
 acc_contrasts <- contrast(emmeans_acc, method = "pairwise")
 summary(acc_contrasts)
+
+# ------------------------------
+# 16. SPR READING TIME BY WORD POSITION & SUPRISAL TYPE
+# ------------------------------
+
+# First, label each SPR row with surprisal_type
+spr_data_exp <- spr_data_exp %>%
+  mutate(
+    surprisal_type = dplyr::case_when(
+      context_condition == spr_condition ~ "matched",
+      (context_condition == "dere" & spr_condition == "dedicto") |
+        (context_condition == "dedicto" & spr_condition == "dere") ~ "mismatched_opposite",
+      context_condition == "amb" | spr_condition == "amb" ~ "ambiguous",
+      TRUE ~ "mismatched"
+    )
+  )
+
+# Optional: restrict only to matched, mismatched_opposite, ambiguous
+spr_data_exp_core <- spr_data_exp %>%
+  filter(surprisal_type %in% c("matched", "mismatched_opposite", "ambiguous"))
+
+# Aggregate: mean or median RT by word position and surprisal type
+spr_wordpos_summary <- spr_data_exp_core %>%
+  group_by(word_position, surprisal_type) %>%
+  summarize(
+    mean_rt = mean(reading_time, na.rm = TRUE),
+    median_rt = median(reading_time, na.rm = TRUE),
+    se_rt = sd(reading_time, na.rm = TRUE) / sqrt(n()),
+    n = n(),
+    .groups = "drop"
+  )
+
+# Plot: Mean (or median) reading time by word position, by condition
+library(ggplot2)
+ggplot(spr_wordpos_summary, aes(x = word_position, y = mean_rt, color = surprisal_type)) +
+  geom_line(size = 1.1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = mean_rt - se_rt, ymax = mean_rt + se_rt), width = 0.2, alpha = 0.5) +
+  labs(
+    title = "Mean Reading Time by Word Position and Surprisal Type",
+    x = "Word Position",
+    y = "Mean Reading Time (ms)",
+    color = "Condition"
+  ) +
+  theme_minimal() +
+  scale_color_manual(values = c("matched" = "#4daf4a", "mismatched_opposite" = "#e41a1c", "ambiguous" = "#377eb8"))
+
+# Optional: median plot (swap y = median_rt)
+ggplot(spr_wordpos_summary, aes(x = word_position, y = median_rt, color = surprisal_type)) +
+  geom_line(size = 1.1) +
+  geom_point(size = 2) +
+  labs(
+    title = "Median Reading Time by Word Position and Surprisal Type",
+    x = "Word Position",
+    y = "Median Reading Time (ms)",
+    color = "Condition"
+  ) +
+  theme_minimal()
+
