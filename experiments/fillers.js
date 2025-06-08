@@ -125,7 +125,7 @@ const fillerStimuli = [
   {
     "item_id": "F8",
     "class": "filler",
-    "dialogue": "A: Ercan yeni iş bulmuş, duydun mu? Ben duyunca çok mutlu oldum doğusu!\nB: Duydum, duymaz mıyım! Nefis bir haber gerçekten de. Havaalanında güvenlik görevlisi olarak çalışacakmış.",
+    "dialogue": "A: Ercan yeni iş bulmuş, duydun mu? Ben duyunca çok mutlu oldum doğrusu!\nB: Duydum, duymaz mıyım! Nefis bir haber gerçekten de. Havaalanında güvenlik görevlisi olarak çalışacakmış.",
     "spr": [
       "A:",
       "Demek",
