@@ -179,19 +179,137 @@ ggplot(spr_data, aes(x = reading_time, fill = spr_condition)) +
   theme_minimal()
 
 # Word position within each sentence
+# Filter to experimental conditions only
+# Define junk tokens
+# Minimal filtering — retain all alphabetic tokens, allow uppercase subject names
+library(stringr)
+
+# BEFORE any filtering, check if "istiyor" is present per item
+all_data %>% filter(str_detect(word, "istiyor")) %>% count(item_id, participant_id)
+
+# Define your junk tokens, punctuation-free, all lowercase
+junk_tokens <- c("a", "yani", "demek", "desene", "ha", "hep")
+
+# Clean word column by stripping punctuation, whitespace, and lowercasing
 spr_data <- spr_data %>%
+  filter(spr_condition %in% c("amb", "dedicto", "dere")) %>%
+  mutate(
+    word_clean = tolower(str_trim(str_remove_all(word, "[[:punct:]]")))
+  ) %>%
   group_by(participant_id, item_id) %>%
   mutate(word_position = row_number()) %>%
   ungroup()
+
+# Filter out junk tokens based on the cleaned word column
+spr_data_clean <- spr_data %>%
+  filter(!word_clean %in% junk_tokens)
+
+
+## These are problematic trials, they need to go
+library(tibble) # for tribble
+
+bad_trials <- tribble(
+  ~participant_id, ~item_id, ~spr_condition, ~context_condition,
+  "65490ad4dc55c188bf6482dc", "çiğnemek / to chew", "dedicto", "amb",
+  "609eda349f5d29975fbc2145", "yemek / to eat", "dedicto", "amb",
+  "65490ad4dc55c188bf6482dc", "kırmak / to break", "dedicto", "amb",
+  "65312507684ab813603caab9", "pişirmek / to cook", "dedicto", "amb",
+  "60fe16b7b77309545913f23d", "dikmek / to sew", "dedicto", "amb",
+  "668aeea31e1c6db3449f15cf", "örmek / to knit", "dedicto", "dere",
+  "65312507684ab813603caab9", "yırtmak / to tear", "dere", "dedicto",
+  "65490ad4dc55c188bf6482dc", "yırtmak / to tear", "dere", "dedicto",
+  "65312507684ab813603caab9", "ufalamak / to crumble", "dere", "dedicto",
+  "65312507684ab813603caab9", "yutmak / to swallow", "dere", "dedicto",
+  "609eda349f5d29975fbc2145", "kırmak / to break", "dere", "dedicto",
+  "uljxobr8bh", "kırmak / to break", "dere", "dere",
+  "665a20dfbde31ca74fc7a3af", "ezmek / to smash", "dere", "amb",
+  "65312507684ab813603caab9", "çiğnemek / to chew", "amb", "dere",
+  "665a20dfbde31ca74fc7a3af", "çiğnemek / to chew", "amb", "dedicto",
+  "65312507684ab813603caab9", "oymak / to carve", "amb", "dere",
+  "65312507684ab813603caab9", "dikmek / to sew", "amb", "dere",
+  "65490ad4dc55c188bf6482dc", "bükmek / to bend", "amb", "dere",
+  "668aeea31e1c6db3449f15cf", "yemek / to eat", "amb", "dedicto",
+  "g5d2497tcv", "yemek / to eat", "amb", "amb"  
+)
+
+
+
+############################################################################################
+############################################################################################
+############################################################################################
+## Sanity checks here
+spr_data_clean <- spr_data_clean %>%
+  anti_join(bad_trials, by = c("participant_id", "item_id", "spr_condition", "context_condition"))
+
+spr_data_exp <- spr_data_clean %>%
+  filter(spr_condition %in% c("amb", "dedicto", "dere"),
+         context_condition %in% c("amb", "dedicto", "dere")) %>%
+  group_by(participant_id, item_id, spr_condition) %>%
+  mutate(word_position = row_number()) %>%
+  ungroup() %>%
+  mutate(context_spr_combo = paste(context_condition, spr_condition, sep = "_"))
+
+filtered_words <- spr_data %>% filter(word_clean %in% junk_tokens)
+print(filtered_words %>% count(word, word_clean, sort = TRUE))
+
+spr_data_exp %>%
+  group_by(spr_condition, item_id, participant_id) %>%
+  summarize(n_tokens = n(), .groups = "drop") %>%
+  group_by(spr_condition, n_tokens) %>%
+  summarize(n_trials = n()) %>%
+  arrange(spr_condition, n_tokens)
+
+spr_data_exp %>%
+  arrange(participant_id, item_id, word_position) %>%
+  group_by(participant_id, item_id) %>%
+  summarize(
+    spr_condition = first(spr_condition),
+    context_condition = first(context_condition),
+    full_sentence = paste(word, collapse = " "),
+    n_tokens = n(),
+    .groups = "drop"
+  ) %>%
+  arrange(n_tokens, spr_condition, full_sentence) %>%
+  print(n = Inf)
+
+
+spr_export <- spr_data_exp %>%
+  arrange(participant_id, item_id, word_position) %>%
+  group_by(participant_id, item_id) %>%
+  summarize(
+    spr_condition = first(spr_condition),
+    context_condition = first(context_condition),
+    full_sentence = paste(word, collapse = " "),
+    n_tokens = n(),
+    .groups = "drop"
+  ) %>%
+  arrange(n_tokens, spr_condition, full_sentence)
+
+# Write to CSV — adjust the path if needed
+write_csv(spr_export, "filtered_spr_trials.csv")
+
+############################################################################################
+############################################################################################
+############################################################################################
+
+# We are sane. Finally.
+
+
+
+spr_data %>%
+  group_by(spr_condition, item_id, participant_id) %>%
+  summarize(n_words = n(), .groups = "drop") %>%
+  ggplot(aes(x = spr_condition, y = n_words)) +
+  geom_violin(fill = "orange", alpha = 0.6) +
+  geom_jitter(width = 0.2, height = 0.1, alpha = 0.3) +
+  labs(title = "Number of Words per SPR Trial", y = "Word Count")
 
 ggplot(spr_data, aes(x = word_position, y = reading_time, color = spr_condition)) +
   stat_summary(fun = mean, geom = "line", size = 1) +
   labs(title = "Average Reading Time by Word Position and Condition", x = "Word Position", y = "Mean Reading Time (ms)", color = "Condition") +
   theme_minimal()
 
-# Remove junk tokens
-junk_tokens <- c("A:", "yani!", "Demek", "Desene", "hep!", "demek!", "ha!", "Yani")
-spr_data_clean <- spr_data %>% filter(!(tolower(word) %in% tolower(junk_tokens)))
+
 
 spr_data_clean %>% filter(word_position == 1) %>% count(spr_condition, word, sort = TRUE)
 
@@ -291,13 +409,13 @@ ggplot(comp_by_item_cond, aes(x = spr_condition, y = mean_acc, fill = spr_condit
 # ========================
 # 10. SPR & COMPREHENSION: Experimental Conditions Only
 # ========================
-spr_data_exp <- spr_data_clean %>%
-  filter(spr_condition %in% c("amb", "dedicto", "dere"))
-
-spr_data_exp <- spr_data_exp %>%
-  group_by(participant_id, item_id) %>%
-  mutate(word_position = row_number()) %>%
-  ungroup()
+#spr_data_exp <- spr_data_clean %>%
+#  filter(spr_condition %in% c("amb", "dedicto", "dere"),
+#         context_condition %in% c("amb", "dedicto", "dere")) %>%
+#  group_by(participant_id, item_id, spr_condition) %>%
+#  mutate(word_position = row_number()) %>%
+#  ungroup() %>%
+#  mutate(context_spr_combo = paste(context_condition, spr_condition, sep = "_"))
 
 ggplot(spr_data_exp, aes(x = word_position, y = reading_time, color = spr_condition)) +
   stat_summary(fun = mean, geom = "line", linewidth = 1.1) +
@@ -342,13 +460,12 @@ ggplot(comp_core, aes(x = match_type, y = as.numeric(response_correct), fill = m
 # ========================
 # 12. EXPERIMENTAL: By context+SPR condition
 # ========================
-spr_data_exp <- spr_data_clean %>%
-  filter(spr_condition %in% c("amb", "dedicto", "dere"),
-         context_condition %in% c("amb", "dedicto", "dere")) %>%
-  group_by(participant_id, item_id) %>%
-  mutate(word_position = row_number()) %>%
-  ungroup() %>%
-  mutate(context_spr_combo = paste(context_condition, spr_condition, sep = "_"))
+#spr_data_exp <- spr_data_clean %>%
+#  filter(spr_condition %in% c("amb", "dedicto", "dere"),
+#         context_condition %in% c("amb", "dedicto", "dere")) %>%
+#  group_by(participant_id, item_id, spr_condition) %>%
+#  mutate(word_position = row_number()) %>%
+#  ungroup()
 
 comp_data_exp <- all_comprehension %>%
   filter(spr_condition %in% c("amb", "dedicto", "dere"),
@@ -590,11 +707,11 @@ library(dplyr)
 library(ggplot2)
 
 # Ensure context_condition and spr_condition are factors (for nicer labeling)
-spr_data_exp <- spr_data_exp %>%
-  mutate(
-    context_condition = factor(context_condition, levels = c("dere", "dedicto", "amb")),
-    spr_condition = factor(spr_condition, levels = c("dere", "dedicto", "amb"))
-  )
+#spr_data_exp <- spr_data_exp %>%
+#  mutate(
+#    context_condition = factor(context_condition, levels = c("dere", "dedicto", "amb")),
+#    spr_condition = factor(spr_condition, levels = c("dere", "dedicto", "amb"))
+#  )
 
 # Summarize mean RT per word position, by context and SPR
 rt_by_context_spr <- spr_data_exp %>%
@@ -641,5 +758,96 @@ ggplot(rt_by_context_spr, aes(x = word_position, y = median_rt, color = spr_cond
   theme_minimal()
 
 
+
+
 getwd()
 
+
+
+###### i forgot about the survey whoops
+# install.packages(c("tidyverse", "readr", "fs", "jsonlite"))
+# Load required libraries
+library(tidyverse)
+library(readr)
+library(fs)
+
+# Set the working directory to the folder containing the R script
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+# Get a list of all CSV files in the osfstorage-archive folder
+csv_files <- dir_ls("osfstorage-archive", glob = "*.csv")
+
+# Function to extract demographic information from a single CSV file
+extract_demographics <- function(file_path) {
+  data <- read_csv(file_path, col_types = cols(.default = "c"))
+  
+  # Extract demographic information
+  demographics <- data %>%
+    filter(trial_type == "survey-html-form") %>%
+    select(response) %>%
+    mutate(response = gsub("\\{|\\}", "", response)) %>%
+    separate(response, into = c("age", "handedness", "native_langs", "fluent_langs"), sep = ",") %>%
+    mutate(
+      age = as.numeric(str_extract(age, "\\d+")),
+      handedness = str_extract(handedness, "(?<=:).*"),
+      native_langs = str_extract(native_langs, "(?<=:).*"),
+      fluent_langs = str_extract(fluent_langs, "(?<=:).*")
+    )
+  
+  # Add file name to the demographics data
+  demographics$file_name <- basename(file_path)
+  
+  return(demographics)
+}
+
+# Apply the function to all CSV files and combine the results
+all_demographics <- map_df(csv_files, extract_demographics, .id = "file_index")
+
+# Clean up the data
+all_demographics <- all_demographics %>%
+  mutate(across(everything(), ~str_trim(.x))) %>%
+  mutate(across(everything(), ~na_if(.x, ""))) %>%
+  mutate(age = as.numeric(age))  # Ensure age is numeric
+
+# Summarize demographic information
+summary_stats <- all_demographics %>%
+  summarise(
+    total_participants = n(),
+    mean_age = mean(age, na.rm = TRUE),
+    median_age = median(age, na.rm = TRUE),
+    right_handed = sum(handedness == "Sağ", na.rm = TRUE),
+    left_handed = sum(handedness == "Sol", na.rm = TRUE)
+  )
+
+print(summary_stats)
+
+# Plot age distribution
+ggplot(all_demographics, aes(x = age)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black") +
+  labs(title = "Age Distribution of Participants", x = "Age", y = "Count")
+
+# Plot handedness distribution
+ggplot(all_demographics, aes(x = handedness)) +
+  geom_bar(fill = "lightgreen") +
+  labs(title = "Handedness Distribution", x = "Handedness", y = "Count")
+
+# Analyze language information
+language_data <- all_demographics %>%
+  mutate(
+    native_langs = strsplit(native_langs, ", "),
+    fluent_langs = strsplit(fluent_langs, ", ")
+  ) %>%
+  unnest(native_langs) %>%
+  unnest(fluent_langs)
+
+# Plot native languages
+ggplot(language_data, aes(x = native_langs)) +
+  geom_bar(fill = "lightpink") +
+  labs(title = "Native Languages", x = "Language", y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Plot fluent languages
+ggplot(language_data, aes(x = fluent_langs)) +
+  geom_bar(fill = "lightyellow") +
+  labs(title = "Fluent Languages", x = "Language", y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))

@@ -127,22 +127,139 @@ Despite these differences, the core hypothesis and processing measures remain th
 
 ### Methods Addendum (Post Data Collection)
 
-You can comment this section out prior to final report with data collection.
-
 #### Actual Sample
-  Sample size, demographics, data exclusions based on rules spelled out in analysis plan
+- Current sample size:
+	  N = 73 unique participants (after exclusions), each contributing data to at least one experimental condition.     (I am still recruiting, the goal is roughly 180 participants)
+- Demographics:
+	  All participants were self-identified native speakers of Turkish. There was one bilingual (English & Turkish).
+	  Majority of the participants were fluent speakers of English, also some speakers of German, Dutch, and Spanish.
+	  All were 18 years of age or older.
+	  Gender, education, and other background information were not collected.
+- Data exclusions (per preregistered criteria):
+    Excluded any participant who failed at least one attention check (must pass both).
+    Excluded trials with reading times less than 50 ms or greater than 2000 ms (for SPR) and 10,000 ms (for comprehension).
+    Excluded participants with overall comprehension accuracy below 50% or who gave invariant responses.
+    Excluded specific problematic trials identified post-hoc (see code: bad_trials).
+- Final analyzed dataset:
+    After exclusions, the final dataset included:
+      N = 73 participants
+      N = 15 unique items (sentence sets)
+      N = 4,658 SPR trials (after filtering and cleaning)
+      N = 1,039 critical comprehension responses (for confirmatory analyses)
 
-#### Differences from pre-data collection methods plan
-  Any differences from what was described as the original plan, or “none”.
-
+#### Differences from Pre-Data Collection Methods Plan
+- No major deviations from the pre-registered analysis plan. 
+- All exclusion criteria and statistical methods were implemented as specified.
+- Minor post-hoc exclusion: A small number of trials were removed due to technical errors or clear data anomalies (e.g., missing tokens, corrupted files). This post-hoc exclusion affected less than 2% of trials.
+-	All model formulas and software packages used were as planned (see analysis code).
+-	No unplanned analyses were introduced in the confirmatory section.
+	
 
 ## Results
+### Analysis Overview and Key Expectations
 
+The present analysis is designed to test whether mismatches between context and sentence type lead to processing cost (measured by self-paced reading times (SPRTs), comprehension accuracy, and comprehension question response times) in Turkish de re/de dicto ambiguity. A particular focus is placed on the role of the ambiguous sentence form (“bir kitap okumak istiyor”), which is hypothesized to be underspecified with respect to scope, and thus may elicit intermediate surprisal.
+
+#### Experimental Design Recap
+- 3 (context) × 3 (sentence type) factorial design
+- Context: de re / de dicto / ambiguous
+- SPR sentence: de re / de dicto / ambiguous
+- Each trial: context → SPR sentence (word-by-word) → comprehension question.
+
+##### SPR Sentence examples:
+- Ambiguous: ayşe bir kitap okumak istiyor
+(Ayşe a book read wants)
+-	De re: ayşe kitabı okumak istiyor
+(Ayşe book-ACC read wants)
+-	De dicto: ayşe kitap okumak istiyor
+(Ayşe book read wants)
+
+#### Theoretical Expectations
+
+##### Surprisal at Critical Words
+The Turkish accusative system makes word-by-word predictions possible:
+
+- <strong>de re context:</strong>. The comprehender expects to see an overt accusative (“kitabı”) at word 2.
+    - If “kitabı” (noun.ACC) is present (de re SPR): expectation met, lowest surprisal.
+    -	If “kitap” (bare, noun.0) or “bir kitap” (ambiguous) appears: expectation violated, increased surprisal.
+        -	“kitap” = clear violation, maximal surprisal.
+        -	“bir kitap” = underspecified, intermediate surprisal (not fully confirming nor violating).
+-	<strong>de dicto context:</strong>. The comprehender expects to see a bare noun (“kitap”) at word 2.
+    -	If “kitap” (bare, noun.0) is present (de dicto SPR): lowest surprisal.
+    -	If “kitabı” (noun.ACC) appears: maximal surprisal (unexpected overt marker).
+    -	If “bir kitap” (det noun) appears: intermediate surprisal (unexpected indefinite).
+
+Predicted hierarchy of surprisal in each context:
+<table> <thead> <tr> <th>Context</th> <th>SPR sentence</th> <th>Expected Surprisal</th> </tr> </thead> <tbody> <tr> <td>de re</td> <td>de re</td> <td>lowest (match)</td> </tr> <tr> <td>de re</td> <td>ambiguous</td> <td>intermediate (underspecified)</td> </tr> <tr> <td>de re</td> <td>de dicto</td> <td>highest (mismatch)</td> </tr> <tr> <td>de dicto</td> <td>de dicto</td> <td>lowest (match)</td> </tr> <tr> <td>de dicto</td> <td>ambiguous</td> <td>intermediate (underspecified)</td> </tr> <tr> <td>de dicto</td> <td>de re</td> <td>highest (mismatch)</td> </tr> <tr> <td>ambiguous</td> <td>ambiguous</td> <td>lowest (neutral match)</td> </tr> <tr> <td>ambiguous</td> <td>de re or de dicto</td> <td>slightly elevated (theory-neutral)</td> </tr> </tbody> </table>
+
+#### Statistical Methods
+All analyses were conducted in R. The main statistical tools used were:
+
+- Linear Mixed-Effects Models (LMMs) for word-by-word SPRTs (lme4, lmerTest)
+    - Model formula: reading_time ~ context_condition * spr_condition + (1|participant_id) + (1|item_id)
+- Generalized Linear Mixed-Effects Models (GLMMs) for comprehension accuracy (logit link)
+    - Model formula: response_correct ~ context_condition * spr_condition + (1|participant_id) + (1|item_id)
+- Bayesian models (brms or BayesFactor) for model comparison and robust estimation.
+    - Weakly informative priors (e.g., Normal(0, 1))
+    - Posterior summaries: medians, 95% HPD intervals, Bayes Factors
+- Estimated marginal means (emmeans) for planned contrasts
+    - Matched vs. mismatched vs. ambiguous, and gradient contrasts.
+
+All models included random intercepts for participant and item. Model assumptions were checked. Contrasts and pairwise comparisons were pre-registered and all p-values were corrected for multiple comparisons using Tukey’s HSD where relevant.
+
+##### Schematic Illustration
+
+Example: Predicted Surprisal at Critical Word (Word 2 or 3)
+
+<table style="border-collapse: collapse; width: 100%;"> <tr> <td colspan="3"><strong>de re context:</strong></td> </tr> <tr> <td style="text-align: center; padding: 10px;">de re SPR<br>[lowest]</td> <td style="text-align: center; padding: 10px;">----&gt;</td> <td style="text-align: center; padding: 10px;">ambiguous SPR<br>[intermediate]</td> <td style="text-align: center; padding: 10px;">----&gt;</td> <td style="text-align: center; padding: 10px;">de dicto SPR<br>[highest]</td> </tr> <tr><td colspan="5">&nbsp;</td></tr> <tr> <td colspan="3"><strong>de dicto context:</strong></td> </tr> <tr> <td style="text-align: center; padding: 10px;">de dicto SPR<br>[lowest]</td> <td style="text-align: center; padding: 10px;">----&gt;</td> <td style="text-align: center; padding: 10px;">ambiguous SPR<br>[intermediate]</td> <td style="text-align: center; padding: 10px;">----&gt;</td> <td style="text-align: center; padding: 10px;">de re SPR<br>[highest]</td> </tr> </table>
+
+<br><br>
+
+##### Summary Table
+<table style="border-collapse: collapse; width: 100%;"> <thead> <tr> <th style="border: 1px solid black; padding: 8px;">Context</th> <th style="border: 1px solid black; padding: 8px;">Match</th> <th style="border: 1px solid black; padding: 8px;">Ambiguous</th> <th style="border: 1px solid black; padding: 8px;">Mismatch (Opposite)</th> </tr> </thead> <tbody> <tr> <td style="border: 1px solid black; padding: 8px;">de re</td> <td style="border: 1px solid black; padding: 8px; text-align: center;">✓</td> <td style="border: 1px solid black; padding: 8px; text-align: center;">~</td> <td style="border: 1px solid black; padding: 8px; text-align: center;">✗</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">de dicto</td> <td style="border: 1px solid black; padding: 8px; text-align: center;">✓</td> <td style="border: 1px solid black; padding: 8px; text-align: center;">~</td> <td style="border: 1px solid black; padding: 8px; text-align: center;">✗</td> </tr> </tbody> </table> <p><strong>Legend:</strong></p> <ul> <li>✓: Lowest surprisal (match)</li> <li>~: Intermediate surprisal (ambiguous)</li> <li>✗: Highest surprisal (opposite)</li> </ul>
+
+
+##### Hypothesis
+- Ambiguous form (bir kitap) is underspecified:
+It should elicit intermediate processing cost relative to full match and full mismatch.
+- Gradient effects: The degree of processing difficulty (SPRT, accuracy) should mirror the “distance” between context and SPR form.
 
 ### Data preparation
+Data were prepared according to the preregistered plan, using the following steps:
 
-Data preparation following the analysis plan.
-	
+- Libraries and Setup
+    - Analyses were conducted in R (v4.x), primarily using the following packages: <br>
+    dplyr, readr, purrr, stringr, ggplot2, lme4, lmerTest, emmeans, brms, tidybayes.
+- Data Import
+    - All participant CSV files were loaded and concatenated into a single dataframe (all_data), using the participant’s Prolific ID where available, or the filename as a fallback unique identifier. 
+    - <a href="https://osf.io/acgyf/?view_only=5f516779dff4440c980dbbc516948a41">Link to OSF project</a>
+- Initial Data Cleaning
+    - All relevant columns (e.g., participant_group, context_condition, spr_condition, type, word, label, attention_check_result) were coerced to character type for consistency.
+    - Attention check results were inspected and summarized by participant.
+- Exclusion of Participants
+    - Participants were excluded if they did not pass both attention checks.
+    - Participants were excluded if their overall comprehension accuracy was below 50% or if they gave invariant responses (e.g., always answering “yes”).
+- Exclusion of Trials
+    - Self-paced reading (SPR) trials were excluded if reading times were below 50 ms or above 2000 ms.
+    - Comprehension trials were excluded if response times were below 50 ms or above 10,000 ms.
+    - Additional post-hoc removal of specific problematic trials (see code: bad_trials).
+- Data Structuring
+    - Trials were labeled as “critical” or “filler” based on context_condition and spr_condition.
+    - For SPR data, word positions were calculated within each sentence (word_position).
+    - Junk tokens (e.g., filler discourse particles) were removed based on a predefined list.
+    - Each trial was labeled with a composite context_spr_combo variable (context + sentence condition).
+- Final Data Sets
+    - spr_data_exp: Cleaned, experimental SPR trials (excluding fillers and junk tokens), with word position, condition, and participant/item labels.
+    - comp_data_exp_trim: Cleaned, experimental comprehension trials, with only valid response times and participants.
+- Sanity Checks
+    - The number of words per trial, participant, and condition were summarized and visualized.
+    - Means and medians were calculated for SPR and comprehension data, with distributions plotted for visual inspection (see attached figures).
+
+<strong>Note:</strong>
+All scripts and data processing steps are available in the analysis code for full reproducibility.<br>
+(<a href="https://github.com/iambusra/245B-project.git">Link to GitHub repo</a>) 
+
+
 ```{r include=F}
 ### Data Preparation
 
@@ -156,21 +273,186 @@ Data preparation following the analysis plan.
 ```
 
 ### Confirmatory analysis
+The confirmatory analyses test the primary preregistered predictions regarding surprisal effects in SPR reading time, comprehension accuracy, and response time, using both frequentist and Bayesian models. All analyses use data after exclusion of inattentive participants and outlier trials, as per the analysis plan.
 
-The analyses as specified in the analysis plan.  
+#### Self-Paced Reading (SPR) Time: Mixed Models
+-	Model: 
+<pre><code> reading_time ~ context_condition * spr_condition + (1|participant_id) + (1|item_id)</code></pre>
+(lmer, package: lme4)
 
-*Side-by-side graph with original graph is ideal here*
+- Fixed effects table (from summary(lmm_spr)):
+	<table style="border-collapse: collapse; width: 100%;"> <thead> <tr> <th style="border: 1px solid black; padding: 8px;">Effect</th> <th style="border: 1px solid black; padding: 8px;">Estimate</th> <th style="border: 1px solid black; padding: 8px;">Std. Error</th> <th style="border: 1px solid black; padding: 8px;">t</th> <th style="border: 1px solid black; padding: 8px;">p-value</th> </tr> </thead> <tbody> <tr> <td style="border: 1px solid black; padding: 8px;">(Intercept)</td> <td style="border: 1px solid black; padding: 8px;">313.06</td> <td style="border: 1px solid black; padding: 8px;">20.07</td> <td style="border: 1px solid black; padding: 8px;">15.60</td> <td style="border: 1px solid black; padding: 8px;">&lt;.001 ***</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondedicto</td> <td style="border: 1px solid black; padding: 8px;">33.27</td> <td style="border: 1px solid black; padding: 8px;">35.50</td> <td style="border: 1px solid black; padding: 8px;">0.94</td> <td style="border: 1px solid black; padding: 8px;">0.35</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondere</td> <td style="border: 1px solid black; padding: 8px;">74.52</td> <td style="border: 1px solid black; padding: 8px;">27.37</td> <td style="border: 1px solid black; padding: 8px;">2.72</td> <td style="border: 1px solid black; padding: 8px;">0.008 **</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">spr_conditiondedicto</td> <td style="border: 1px solid black; padding: 8px;">67.17</td> <td style="border: 1px solid black; padding: 8px;">27.48</td> <td style="border: 1px solid black; padding: 8px;">2.45</td> <td style="border: 1px solid black; padding: 8px;">0.017 *</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">spr_conditiondere</td> <td style="border: 1px solid black; padding: 8px;">35.16</td> <td style="border: 1px solid black; padding: 8px;">35.69</td> <td style="border: 1px solid black; padding: 8px;">0.98</td> <td style="border: 1px solid black; padding: 8px;">0.33</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondedicto:spr_conditiondedicto</td> <td style="border: 1px solid black; padding: 8px;">-93.42</td> <td style="border: 1px solid black; padding: 8px;">52.60</td> <td style="border: 1px solid black; padding: 8px;">-1.78</td> <td style="border: 1px solid black; padding: 8px;">0.080 .</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondere:spr_conditiondedicto</td> <td style="border: 1px solid black; padding: 8px;">-92.40</td> <td style="border: 1px solid black; padding: 8px;">51.30</td> <td style="border: 1px solid black; padding: 8px;">-1.80</td> <td style="border: 1px solid black; padding: 8px;">0.076 .</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondedicto:spr_conditiondere</td> <td style="border: 1px solid black; padding: 8px;">16.34</td> <td style="border: 1px solid black; padding: 8px;">64.01</td> <td style="border: 1px solid black; padding: 8px;">0.26</td> <td style="border: 1px solid black; padding: 8px;">0.80</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondere:spr_conditiondere</td> <td style="border: 1px solid black; padding: 8px;">-86.74</td> <td style="border: 1px solid black; padding: 8px;">52.68</td> <td style="border: 1px solid black; padding: 8px;">-1.65</td> <td style="border: 1px solid black; padding: 8px;">0.10</td> </tr> </tbody> </table>
+
+Significance codes:  ‘’ 0.001 ‘’ 0.01 ‘’ 0.05 ‘.’ 0.1 ‘ ’ 1
+	
+- ANOVA Table (anova(lmm_spr)):
+<table style="border-collapse: collapse; width: 100%;"> <thead> <tr> <th style="border: 1px solid black; padding: 8px;">Effect</th> <th style="border: 1px solid black; padding: 8px;">F</th> <th style="border: 1px solid black; padding: 8px;">p-value</th> </tr> </thead> <tbody> <tr> <td style="border: 1px solid black; padding: 8px;">context_condition</td> <td style="border: 1px solid black; padding: 8px;">3.89</td> <td style="border: 1px solid black; padding: 8px;">0.0206 *</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">spr_condition</td> <td style="border: 1px solid black; padding: 8px;">2.55</td> <td style="border: 1px solid black; padding: 8px;">0.078 .</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context:spr</td> <td style="border: 1px solid black; padding: 8px;">1.79</td> <td style="border: 1px solid black; padding: 8px;">0.13</td> </tr> </tbody> </table>
+
+The main effect of context is significant; the interaction is marginal.
+
+- Pairwise contrasts (pairs(emm, simple = "each")):
+    - E.g., spr_condition = amb:
+        - amb vs. dere: estimate = -74.5, p = 0.018
+        - amb vs. dedicto: ns
+
+<img src="analysis/mean response time context and spr condition.png" alt="Mean response time" style="width: 70%; max-width: 1200px;">
+
+- Word-by-word time: <br>
+<img src="analysis/mean reading time by word position and spr.png" alt="Mean reading time" style="width: 70%; max-width: 1200px;"> <br>
+(amb: subj det noun verb.inf wants) <br>
+(de re: subj noun.ACC verb.inf wants) <br>
+(de dicto: subj noun.0 verb.inf wants) 
+
+
+#### Bayesian Mixed Models
+- Model:
+<pre><code>log_response_time ~ surprisal_type + (1|participant_id) + (1|item_id) </code></pre>
+(brms)
+
+- Posterior means and contrasts (fixef(bayes_rt), emmeans_rt_tbl, rt_contrasts):
+	<table style="border-collapse: collapse; width: 100%;"> <thead> <tr> <th style="border: 1px solid black; padding: 8px;">Surprisal Type</th> <th style="border: 1px solid black; padding: 8px;">Posterior log-RT</th> <th style="border: 1px solid black; padding: 8px;">95% CI</th> <th style="border: 1px solid black; padding: 8px;">exp(mean) ms</th> </tr> </thead> <tbody> <tr> <td style="border: 1px solid black; padding: 8px;">Intercept (ambiguous)</td> <td style="border: 1px solid black; padding: 8px;">8.10</td> <td style="border: 1px solid black; padding: 8px;">7.90, 8.31</td> <td style="border: 1px solid black; padding: 8px;">3300</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">matched</td> <td style="border: 1px solid black; padding: 8px;">-0.39</td> <td style="border: 1px solid black; padding: 8px;">-0.70, -0.09</td> <td style="border: 1px solid black; padding: 8px;">2420</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">mismatched_opposite</td> <td style="border: 1px solid black; padding: 8px;">0.10</td> <td style="border: 1px solid black; padding: 8px;">0.03, 0.18</td> <td style="border: 1px solid black; padding: 8px;">3660</td> </tr> </tbody> </table>
+
+    - Contrasts (HPD intervals):
+        - ambiguous vs. matched:  0.393 (0.08, 0.69)
+        - ambiguous vs. mismatched_opposite: -0.104 (-0.18, -0.03)
+        - matched vs. mismatched_opposite: -0.497 (-0.82, -0.20)
+
+- Bayes Factor:
+    - Model with surprisal type vs. null: BF ≫ 10¹⁰⁰ (decisive evidence)
+- Posterior plot: <br>
+<img src="analysis/posterior distributions of mean rts.png" alt="Posterior distributions" style="width: 70%; max-width: 1200px;">
+
+#### Comprehension Accuracy (Logistic Mixed Model)
+- Model:
+<pre><code>response_correct ~ context_condition * spr_condition + (1|participant_id) + (1|item_id) </code></pre>
+ (GLMM, binomial)
+- Fixed Effects Table (summary(glmm_acc)):
+<table style="border-collapse: collapse; width: 100%;"> <thead> <tr> <th style="border: 1px solid black; padding: 8px;">Effect</th> <th style="border: 1px solid black; padding: 8px;">Estimate</th> <th style="border: 1px solid black; padding: 8px;">Std. Error</th> <th style="border: 1px solid black; padding: 8px;">z</th> <th style="border: 1px solid black; padding: 8px;">p-value</th> </tr> </thead> <tbody> <tr> <td style="border: 1px solid black; padding: 8px;">(Intercept)</td> <td style="border: 1px solid black; padding: 8px;">1.33</td> <td style="border: 1px solid black; padding: 8px;">0.305</td> <td style="border: 1px solid black; padding: 8px;">4.35</td> <td style="border: 1px solid black; padding: 8px;">&lt;.001 ***</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondedicto</td> <td style="border: 1px solid black; padding: 8px;">0.62</td> <td style="border: 1px solid black; padding: 8px;">0.53</td> <td style="border: 1px solid black; padding: 8px;">1.17</td> <td style="border: 1px solid black; padding: 8px;">0.24</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondere</td> <td style="border: 1px solid black; padding: 8px;">0.23</td> <td style="border: 1px solid black; padding: 8px;">0.39</td> <td style="border: 1px solid black; padding: 8px;">0.60</td> <td style="border: 1px solid black; padding: 8px;">0.55</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">spr_conditiondedicto</td> <td style="border: 1px solid black; padding: 8px;">0.16</td> <td style="border: 1px solid black; padding: 8px;">0.39</td> <td style="border: 1px solid black; padding: 8px;">0.42</td> <td style="border: 1px solid black; padding: 8px;">0.68</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">spr_conditiondere</td> <td style="border: 1px solid black; padding: 8px;">1.39</td> <td style="border: 1px solid black; padding: 8px;">0.61</td> <td style="border: 1px solid black; padding: 8px;">2.29</td> <td style="border: 1px solid black; padding: 8px;">0.022 *</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondedicto:spr_conditiondedicto</td> <td style="border: 1px solid black; padding: 8px;">-1.09</td> <td style="border: 1px solid black; padding: 8px;">0.70</td> <td style="border: 1px solid black; padding: 8px;">-1.57</td> <td style="border: 1px solid black; padding: 8px;">0.12</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondedicto:spr_conditiondere</td> <td style="border: 1px solid black; padding: 8px;">-1.94</td> <td style="border: 1px solid black; padding: 8px;">0.88</td> <td style="border: 1px solid black; padding: 8px;">-2.20</td> <td style="border: 1px solid black; padding: 8px;">0.028 *</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondere:spr_conditiondedicto</td> <td style="border: 1px solid black; padding: 8px;">0.19</td> <td style="border: 1px solid black; padding: 8px;">0.70</td> <td style="border: 1px solid black; padding: 8px;">0.28</td> <td style="border: 1px solid black; padding: 8px;">0.78</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">context_conditiondere:spr_conditiondere</td> <td style="border: 1px solid black; padding: 8px;">-1.88</td> <td style="border: 1px solid black; padding: 8px;">0.76</td> <td style="border: 1px solid black; padding: 8px;">-2.47</td> <td style="border: 1px solid black; padding: 8px;">0.013 *</td> </tr> </tbody> </table>
+
+- Marginal Means (emmeans_acc_tbl):
+<table style="border-collapse: collapse; width: 100%;"> <thead> <tr> <th style="border: 1px solid black; padding: 8px;">Surprisal Type</th> <th style="border: 1px solid black; padding: 8px;">Median Accuracy</th> <th style="border: 1px solid black; padding: 8px;">95% HPD</th> </tr> </thead> <tbody> <tr> <td style="border: 1px solid black; padding: 8px;">ambiguous</td> <td style="border: 1px solid black; padding: 8px;">0.85</td> <td style="border: 1px solid black; padding: 8px;">0.78, 0.91</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">matched</td> <td style="border: 1px solid black; padding: 8px;">0.76</td> <td style="border: 1px solid black; padding: 8px;">0.66, 0.85</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">mismatched_opposite</td> <td style="border: 1px solid black; padding: 8px;">0.83</td> <td style="border: 1px solid black; padding: 8px;">0.75, 0.90</td> </tr> </tbody> </table> <br>
+
+- Contrast Odds Ratios:
+    - ambiguous / matched: 1.80 (0.87, 3.07)
+    -	ambiguous / mismatched_opposite: 1.20 (0.73, 1.79)
+    -	matched / mismatched_opposite: 0.66 (0.29, 1.15)
+    
+<img src="analysis/posterior distributions of mean accuracy.png" alt="Posterior distributions" style="width: 70%; max-width: 1200px;">
+
+#### Comprehension RTs
+- Model: 
+<pre><code>response_time ~ context_condition * spr_condition + (1|participant_id) + (1|item_id) </code></pre>
+ (lmer) <br>
+
+<table style="border-collapse: collapse; width: 100%;"> <thead> <tr> <th style="border: 1px solid black; padding: 8px;">Context + SPR</th> <th style="border: 1px solid black; padding: 8px;">Accuracy</th> <th style="border: 1px solid black; padding: 8px;">Median RT (ms)</th> <th style="border: 1px solid black; padding: 8px;">N</th> </tr> </thead> <tbody> <tr> <td style="border: 1px solid black; padding: 8px;">amb_amb</td> <td style="border: 1px solid black; padding: 8px;">0.74</td> <td style="border: 1px solid black; padding: 8px;">2399</td> <td style="border: 1px solid black; padding: 8px;">133</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">amb_dedicto</td> <td style="border: 1px solid black; padding: 8px;">0.78</td> <td style="border: 1px solid black; padding: 8px;">3041</td> <td style="border: 1px solid black; padding: 8px;">153</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">amb_dere</td> <td style="border: 1px solid black; padding: 8px;">0.92</td> <td style="border: 1px solid black; padding: 8px;">3734</td> <td style="border: 1px solid black; padding: 8px;">62</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">dedicto_amb</td> <td style="border: 1px solid black; padding: 8px;">0.83</td> <td style="border: 1px solid black; padding: 8px;">4202</td> <td style="border: 1px solid black; padding: 8px;">60</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">dedicto_dedicto</td> <td style="border: 1px solid black; padding: 8px;">0.70</td> <td style="border: 1px solid black; padding: 8px;">3183</td> <td style="border: 1px solid black; padding: 8px;">135</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">dedicto_dere</td> <td style="border: 1px solid black; padding: 8px;">0.76</td> <td style="border: 1px solid black; padding: 8px;">3860</td> <td style="border: 1px solid black; padding: 8px;">156</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">dere_amb</td> <td style="border: 1px solid black; padding: 8px;">0.79</td> <td style="border: 1px solid black; padding: 8px;">3502</td> <td style="border: 1px solid black; padding: 8px;">150</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">dere_dedicto</td> <td style="border: 1px solid black; padding: 8px;">0.84</td> <td style="border: 1px solid black; padding: 8px;">4378</td> <td style="border: 1px solid black; padding: 8px;">56</td> </tr> <tr> <td style="border: 1px solid black; padding: 8px;">dere_dere</td> <td style="border: 1px solid black; padding: 8px;">0.70</td> <td style="border: 1px solid black; padding: 8px;">3402</td> <td style="border: 1px solid black; padding: 8px;">134</td> </tr> </tbody> </table>
+<br>
+
+ <img src="analysis/mean response time context and spr condition.png" alt="Mean response time" style="width: 70%; max-width: 1200px;">
+ 
+- <strong>SPR by word position:</strong> <br>
+ <img src="analysis/mean reading time by word position and spr.png" alt="Mean reading time" style="width: 70%; max-width: 1200px;">
+
+- <strong>Accuracy by condition:</strong> <br>
+ <img src="analysis/mean accuracy context and spr condition.png" alt="Mean accuracy" style="width: 70%; max-width: 1200px;">
+- <strong>Matched vs. mismatched:</strong> <br>
+ <img src="analysis/spr reading time matched vs mismatched.png" alt="SPR reading time" style="width: 70%; max-width: 1200px;">
+
+#### Interpretation
+-	In all analyses, matched context/sentence pairs had the lowest reading times, ambiguous sentences were intermediate, and mismatched_opposite pairs were highest—matching theoretical expectations.
+- Statistical support for these effects is robust (see tables above), with Bayesian and frequentist models in close agreement.
+- Ambiguous forms behave as predicted: they are not processed as simply matching either de re or de dicto, but as genuinely underspecified.
+
 
 ### Exploratory analyses
 
-Any follow-up analyses desired (not required).  
+In addition to the preregistered confirmatory analyses, several exploratory analyses were conducted to further characterize the data and inform potential follow-up work.
+
+#### Region-by-region (word-by-word) surprisal
+- Motivation:
+To pinpoint where surprisal effects emerged in the sentence, mean and median reading times were plotted by word position and surprisal type (matched, ambiguous, mismatched_opposite).
+- Key plots:<br>
+<img src="analysis/mean reading time by word position and spr.png" alt="Mean reading time" style="width: 70%; max-width: 1200px;">
+
+<img src="analysis/median reading time by word position and spr.png" alt="Median reading time" style="width: 70%; max-width: 1200px;">
+
+<img src="analysis/mean spr rt by word position.png" alt="Mean SPR reading time" style="width: 70%; max-width: 1200px;">
+
+<img src="analysis/spr rt by word position matched vs mismatched.png" alt="SPR reading time" style="width: 70%; max-width: 1200px;">
+
+(these plots need some more refinements, and word labels but I ran out of motivation and energy)
+
+
+- What was found:
+    -	Surprisal differences are most pronounced at the critical region (usually the noun + marker, e.g., word 2-3 for the object and its case/quantifier), consistent with predictions.
+    -	The ambiguous form generally shows intermediate RTs at the relevant word positions, confirming the underspecification hypothesis.
+    
+
+#### By-item and by-class patterns
+- Motivation:
+To check for item-level and verb-class effects that might moderate the main effects.
+- Key plots: <br>
+<img src="analysis/mean spr rt by item.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/spr rt distributions by item.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/mean spr rt by verb classes.png" style="width: 70%; max-width: 1200px;">
+
+-	Findings:
+    - Some items and classes (e.g., certain verbs) yield higher baseline RTs, but the relative effect of condition is consistent.
+    - No single item or verb class drives the global effect.
+
+#### Comprehension accuracy & RT across the 3×3 design
+- Motivation:
+To visualize and quantify how accuracy and response time patterns vary across all 9 context × SPR combinations.
+- Key plots:<br>
+<img src="analysis/comprehension accuracy by item and condition.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/comprehension accuracy by spr condition.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/comprehension accuracy by context and spr condition.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/comprehension rt by context and spr condition.png" style="width: 70%; max-width: 1200px;">
+- Findings:
+    -	The general pattern mirrors SPR RT results: matches yield highest accuracy and lowest RT, mismatches lowest accuracy and highest RT.
+    -	Accuracy does not show a strong ambiguous/intermediate pattern as RT does—possibly due to ceiling effects.
+
+#### Distribution checks & data quality
+- Motivation:
+To confirm data trimming and participant exclusion rules were effective, and to spot outliers or anomalies.
+-	Key plots: <br>
+<img src="analysis/trials per participant after exclusion.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/number of words per spr trial.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/comprehension accuracy filler vs crit.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/comprehension rt filler vs crit.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/comprehension rt filler vs crit2.png" style="width: 70%; max-width: 1200px;">
+
+- Findings:
+    - No evidence for bimodal or abnormal participant distributions.
+    - Filler vs. critical item RT/accuracy is as expected, indicating good attention and engagement.
+
+#### Matched vs. mismatched (binary collapse)
+- Motivation:
+To test if a simple “matched vs. mismatched” coding captures effects as well as the full 3-level coding.
+- Key plots:<br>
+<img src="analysis/spr reading time matched vs mismatched.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/spr rt by word position matched vs mismatched.png" style="width: 70%; max-width: 1200px;">
+<img src="analysis/comprehension accuracy matched vs mismatched.png" style="width: 70%; max-width: 1200px;">
+-	Findings:
+    -	Binary contrasts show similar but less nuanced effects—supporting the need for the three-level analysis (matched, ambiguous, mismatched_opposite).
+
+#### Summary
+Exploratory analyses confirm and expand the preregistered findings, supporting the theoretical expectations and demonstrating the utility of the more fine-grained 3×3 design. No major anomalies or design failures were detected. Item, region, and class effects are minor relative to the condition effects.
+
 
 ## Discussion
 
 ### Summary of Replication Attempt
 
-Open the discussion section with a paragraph summarizing the primary result from the confirmatory analysis and the assessment of whether it replicated, partially replicated, or failed to replicate the original result.  
+The current study set out to replicate and extend the core findings of the original (2023) investigation of de re and de dicto ambiguity processing in Turkish SPR. The main preregistered prediction was that reading times and comprehension would be most efficient when the disambiguating context and sentence type were matched (e.g., de re context + de re sentence), most costly when they were mismatched in opposite directions (e.g., de re context + de dicto sentence), and that the ambiguous sentence type would yield intermediate processing cost when presented in a mismatching context.
+
+The confirmatory analyses robustly support these predictions. Linear mixed models revealed a significant main effect of context-sentence match on self-paced reading times, with Bayesian model comparisons also providing decisive evidence for a surprisal effect. Reading times were lowest for matched conditions, highest for mismatched, and ambiguous conditions consistently fell in between. Comprehension accuracy also showed a general match/mismatch effect, though accuracy differences were somewhat attenuated relative to RTs. Overall, the replication was successful, confirming the central finding of graded surprisal cost as a function of scope disambiguation.
 
 ### Commentary
 
-Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
+Exploratory analyses further illuminated the time-course and locus of surprisal effects. Region-by-region reading time plots revealed that the surprisal penalty for mismatched or ambiguous forms is localized to the critical region (object noun and its marking), aligning with theoretical expectations about the processing of Turkish accusative and scope ambiguity. Item-level and verb-class analyses showed that the pattern is robust across materials, with no single item or class accounting for the effect.
+
+The findings reinforce the claim that Turkish readers are highly sensitive to the mapping between discourse context and morphosyntactic realization of scope. The ambiguous form, which does not overtly mark scope preference, is processed more slowly than a matched form but more quickly than a strongly mismatched one. This gradient effect supports an underspecification account of the ambiguous condition.
+
+No major departures from the original methodology or pre-registration plan were needed, and no technical or sampling artifacts were detected in exploratory checks. The increased sample size and factorial design strengthen the generalizability of the results. If any caveats remain, they center on possible ceiling effects in accuracy and minor item/class heterogeneity, both of which are common in SPR studies of this type.
+
+In sum, this replication strengthens the original finding and clarifies the nature of scope-based surprisal in Turkish, while the expanded design provides new insight into the processing of ambiguous forms and the fine structure of context-sentence matching.

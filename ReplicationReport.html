@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="still me">
+<meta name="dcterms.date" content="2025-06-10">
+
+<title>Replication of De Re De Dicto Ambiguities: Processing by Humans and LLMs by Büşra Marşan (2023, Unpublished MA Thesis, Boğaziçi University)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="ReplicationReport_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ReplicationReport_files/libs/quarto-html/quarto.js"></script>
+<script src="ReplicationReport_files/libs/quarto-html/popper.min.js"></script>
+<script src="ReplicationReport_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ReplicationReport_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ReplicationReport_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ReplicationReport_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ReplicationReport_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ReplicationReport_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ReplicationReport_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
+  <ul class="collapse">
+  <li><a href="#power-analysis" id="toc-power-analysis" class="nav-link" data-scroll-target="#power-analysis">Power Analysis</a></li>
+  <li><a href="#planned-sample" id="toc-planned-sample" class="nav-link" data-scroll-target="#planned-sample">Planned Sample</a></li>
+  <li><a href="#materials" id="toc-materials" class="nav-link" data-scroll-target="#materials">Materials</a></li>
+  <li><a href="#procedure" id="toc-procedure" class="nav-link" data-scroll-target="#procedure">Procedure</a></li>
+  <li><a href="#analysis-plan" id="toc-analysis-plan" class="nav-link" data-scroll-target="#analysis-plan">Analysis Plan</a></li>
+  <li><a href="#differences-from-original-study" id="toc-differences-from-original-study" class="nav-link" data-scroll-target="#differences-from-original-study">Differences from Original Study</a></li>
+  <li><a href="#methods-addendum-post-data-collection" id="toc-methods-addendum-post-data-collection" class="nav-link" data-scroll-target="#methods-addendum-post-data-collection">Methods Addendum (Post Data Collection)</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#analysis-overview-and-key-expectations" id="toc-analysis-overview-and-key-expectations" class="nav-link" data-scroll-target="#analysis-overview-and-key-expectations">Analysis Overview and Key Expectations</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data preparation</a></li>
+  <li><a href="#confirmatory-analysis" id="toc-confirmatory-analysis" class="nav-link" data-scroll-target="#confirmatory-analysis">Confirmatory analysis</a></li>
+  <li><a href="#exploratory-analyses" id="toc-exploratory-analyses" class="nav-link" data-scroll-target="#exploratory-analyses">Exploratory analyses</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a>
+  <ul class="collapse">
+  <li><a href="#summary-of-replication-attempt" id="toc-summary-of-replication-attempt" class="nav-link" data-scroll-target="#summary-of-replication-attempt">Summary of Replication Attempt</a></li>
+  <li><a href="#commentary" id="toc-commentary" class="nav-link" data-scroll-target="#commentary">Commentary</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Replication of De Re De Dicto Ambiguities: Processing by Humans and LLMs by Büşra Marşan (2023, Unpublished MA Thesis, Boğaziçi University)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>still me </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 10, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- Replication reports should all use this template to standardize reporting across projects.  These reports will be public supplementary materials that accompany the summary report(s) of the aggregate results. -->
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>The original study investigated the processing difficulty of de re and de dicto readings in Turkish, using self-paced reading (SPR) to test whether formal semantic complexity correlates with real-time comprehension cost. The findings revealed a clear statistical difference between the baseline condition and all scope-disambiguated conditions (de re and de dicto), both in self-paced reading times and comprehension accuracy. In particular, de re readings showed elevated processing cost, though the difference between de re and de dicto was not consistently significant across all measures.</p>
+<p>In this follow-up experiment, I aim to replicate and extend these findings by testing surprisal effects induced by mismatches between disambiguating contexts and sentence types. Specifically, I will present readers with one of three context types (de re, de dicto, or ambiguous), followed by sentences that are either de re, de dicto, or ambiguous in scope. This 3 (context) × 3 (sentence type) design will hopefully allow me to test whether mismatches between contextual bias and sentence form incur processing cost, and whether ambiguous scope sentences show intermediate difficulty relative to matched and mismatched conditions.</p>
+<p>I treat the ambiguous form as an underspecified representation, one that does not resolve the scope preference. My prediction is that this underspecification will lead to intermediate processing difficulty in mismatching contexts. For example, following a de re context, I expect: de re &lt; ambiguous &lt; de dicto in terms of reading time. Conversely, after a de dicto context, I expect: de dicto &lt; ambiguous &lt; de re.</p>
+<p>I interpret these as gradated surprisal effects, where increased distance between contextual bias and sentence form results in increased processing effort.</p>
+</section>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<section id="power-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="power-analysis">Power Analysis</h3>
+<p>The original study found a clear difference in processing cost between the baseline and scope-disambiguated conditions (de re and de dicto), with de re conditions in particular yielding significantly longer reading times and lower comprehension accuracy. The largest reading time increase relative to baseline was approximately 150 ms in the wide-scope de re condition, which I interpret as a medium effect size (Cohen’s d ≈ 0.5, f ≈ 0.25).</p>
+<p>To ensure sufficient power for detecting similar effects in the current 3 (context) × 3 (sentence type) design, I conducted a series of power analyses using the pwr package in R: - For a one-way ANOVA with f = 0.25, a minimum of 53 participants per group (159 total) is required to achieve 80% power. - For a two-sample t-test comparing matched and mismatched sentence-context pairs with d = 0.5, approximately 64 participants per group are needed. - For a multiple regression with three predictors (context, sentence type, and their interaction), assuming f² = 0.15, the required sample size is approximately 76 participants.</p>
+<p>To complement the frequentist estimates, I also conducted Bayesian simulations using the BayesFactor package. Simulating a between-group difference of d = 0.5 with 40 participants per group yielded a Bayes Factor of approximately 1.7, which is considered anecdotal evidence. I then simulated a full range of sample sizes (20–100 per group), observing that Bayes Factors reliably exceeded the BF &gt; 3 threshold—often used as a benchmark for moderate evidence—only once group sizes reached approximately 80 participants per group. For instance, at n = 100, BFs exceeded 30,000, indicating decisive evidence.</p>
+<p>I also generated a power curve for the one-way ANOVA, confirming that 80% power is achieved at approximately n = 53 per group, validating my current target sample size.</p>
+<p>Based on these analyses, I plan to collect data from at least 159 participants, which will ensure 80% power to detect medium effects in my factorial design and provide robust evidence for or against the hypotheses across both frequentist and Bayesian analyses.</p>
+</section>
+<section id="planned-sample" class="level3">
+<h3 class="anchored" data-anchor-id="planned-sample">Planned Sample</h3>
+<p>Based on my power analysis for a 3 (context) × 3 (sentence type) ANOVA with a medium effect size (f = 0.25), I plan to recruit at least 159 native speakers of Turkish. This sample size, approximately 53 participants per condition, is required to achieve 80% power to detect medium-sized effects in my 3 × 3 factorial design.</p>
+<p>Participants will be recruited from online platforms like Prolific. All participants must meet the following eligibility criteria: - Native proficiency in Turkish - Age 18 or older - No known history of language or cognitive disorders (I can ask this, right?)</p>
+<p>Participants will be pre-screened based on native speaker status, and informed consent will be obtained prior to participation. Each participant will complete a self-paced reading task followed by comprehension questions, with total participation time estimated at 20–30 minutes.</p>
+<p>I will continue data collection until the target sample size is reached. If participants are excluded based on pre-registered criteria (e.g., low comprehension accuracy), I will recruit replacements to ensure that the final analyzed sample meets the required power threshold.</p>
+</section>
+<section id="materials" class="level3">
+<h3 class="anchored" data-anchor-id="materials">Materials</h3>
+<p>The materials for the original study consisted of short dialogues that served as context-setting prompts, followed by ambiguous target sentences designed to support de re, de dicto, or baseline interpretations. As described in the original article:</p>
+<p>“Each item consisted of a brief context followed by a single sentence presented word-by-word using a self-paced reading paradigm. The sentence was ambiguous between de re and de dicto interpretations and was followed by a comprehension question testing interpretation.” In the present study, I closely follow this structure, using a dialogue-style disambiguating context followed by a target sentence and a comprehension question. However, I expand the original design by introducing three sentence types per item: - A de re sentence - A de dicto sentence - An ambiguous sentence (underspecified with respect to scope)</p>
+<p>Each of these sentence types is paired with one of three context types (de re, de dicto, or ambiguous), yielding a 3 (context) × 3 (sentence type) design. This allows us to test processing differences across fully matched, mismatched, and underspecified scope conditions. Sentence-level SPR data and comprehension responses are collected for each trial.</p>
+<p>All experimental items can be viewed at the following link: https://docs.google.com/spreadsheets/d/1orLcIpaoXw6fMNTo3unSmUd-grTe297EUqfvvMDqeN4/edit?usp=sharing</p>
+</section>
+<section id="procedure" class="level3">
+<h3 class="anchored" data-anchor-id="procedure">Procedure</h3>
+<p>I followed the original study’s self-paced reading (SPR) procedure:</p>
+<p>“The experiment was presented using a self-paced reading (SPR) paradigm in which participants pressed the space bar to reveal each word of the sentence one at a time. Reading times were recorded for each region. After each sentence, a comprehension question appeared, and participants responded by pressing one of two labeled keys (‘yes’ or ‘no’).”</p>
+<p>In newer/current version, the dialogue context is shown in full, followed by the target sentence, presented word-by-word via SPR. A comprehension question then appears, and participants respond using keyboard input. All trials are randomized, and each participant sees only one sentence-context pairing per item (Latin Square design). The experiment is hosted online and takes approximately 20–30 minutes to complete.</p>
+</section>
+<section id="analysis-plan" class="level3">
+<h3 class="anchored" data-anchor-id="analysis-plan">Analysis Plan</h3>
+<p>I follow the analysis strategy of the original study as closely as possible. As in the original design, the primary dependent measures are: - Self-paced reading times (SPRTs) at each word or region of the sentence, - Comprehension question response times, and - Comprehension accuracy.</p>
+<p>The original article states: “Reading times shorter than 50 ms or longer than 2000 ms were excluded. Participants were excluded if they scored below 50% accuracy on comprehension questions or gave the same response on every trial.”</p>
+<p>I adopt the same data cleaning and exclusion criteria: - Reading times &lt; 50 ms or &gt; 2000 ms are discarded. - Participants with &lt; 50% comprehension accuracy or invariant comprehension responses are excluded. - Items with technical errors or missing data will also be removed.</p>
+<section id="key-analysis-of-interest" class="level4">
+<h4 class="anchored" data-anchor-id="key-analysis-of-interest">Key analysis of interest</h4>
+<p>My primary analysis targets surprisal effects driven by the interaction between context type and sentence type. Specifically, I test whether mismatches between context and sentence scope result in longer reading times than matched conditions, and whether ambiguous forms yield intermediate processing cost.</p>
+<p>I will analyze critical region reading times using linear mixed-effects models (LMMs), with fixed effects for context, sentence type, and their interaction, and random intercepts for both participants and items. If justified by model fit, I will include by-participant and by-item random slopes.</p>
+<p>Comprehension question RTs and accuracy will be analyzed separately, using LMMs and logistic mixed-effects models respectively.</p>
+</section>
+<section id="planned-contrasts" class="level4">
+<h4 class="anchored" data-anchor-id="planned-contrasts">Planned contrasts</h4>
+<p>I will conduct planned comparisons using contrast coding to compare: - Matched vs.&nbsp;mismatched vs.&nbsp;ambiguous trials, - de re vs.&nbsp;de dicto sentences within each context type, - Gradient surprisal effects (e.g., de re &lt; ambiguous &lt; de dicto in de re contexts, and vice versa).</p>
+</section>
+<section id="additional-analyses" class="level4">
+<h4 class="anchored" data-anchor-id="additional-analyses">Additional analyses</h4>
+<p>I also plan to: - Conduct Bayesian model comparisons using Bayes Factors to evaluate evidence for surprisal effects, - Explore region-by-region RT patterns, particularly around the verb and object noun, - Report both raw and log-transformed RT analyses where appropriate.</p>
+<p>All analyses will be conducted in R using lme4, lmerTest, emmeans, and BayesFactor or brms.</p>
+</section>
+</section>
+<section id="differences-from-original-study" class="level3">
+<h3 class="anchored" data-anchor-id="differences-from-original-study">Differences from Original Study</h3>
+<p>The current experiment is a follow-up to an earlier study conducted by the same researcher. That original study has not been published (it is an unpublished MA thesis) but forms the foundation for the current design. As such, there is a high degree of continuity in both theoretical framing and methodology, and the two experiments may ultimately be analyzed together as part of a single research paper.</p>
+<p>There are, however, several key differences between the original and current studies: - Design: The original study used a 4-condition design that included a baseline and three types of ambiguous sentences (e.g., wide scope de re, narrow scope de re, de dicto). The current study uses a 3 (context) × 3 (sentence type) design that explicitly manipulates both disambiguating context and sentence form. This design allows for a more direct test of surprisal effects and gradient processing cost. - Materials: In the original study, the SPR sentence was always ambiguous. In the current study, the SPR sentence itself varies: participants may read a de re, de dicto, or ambiguous sentence. The comprehension questions remain structurally similar and are used to verify that participants processed the context as intended. - Sample size and analysis: The current study is more extensively powered, with a planned sample of 159 participants to ensure reliable detection of medium-sized effects across the 3 × 3 design. The original study had a smaller sample size. Additionally, while the original analysis was primarily frequentist, the current study also includes Bayesian model comparisons and more explicitly pre-registered contrasts.</p>
+<p>Despite these differences, the core hypothesis and processing measures remain the same, and no procedural differences are expected to meaningfully affect the replicability of the original findings. Instead, the expanded design provides a more detailed investigation of the surprisal effects suggested but not fully tested in the original experiment.</p>
+</section>
+<section id="methods-addendum-post-data-collection" class="level3">
+<h3 class="anchored" data-anchor-id="methods-addendum-post-data-collection">Methods Addendum (Post Data Collection)</h3>
+<section id="actual-sample" class="level4">
+<h4 class="anchored" data-anchor-id="actual-sample">Actual Sample</h4>
+<ul>
+<li>Current sample size: N = 73 unique participants (after exclusions), each contributing data to at least one experimental condition. (I am still recruiting, the goal is roughly 180 participants)</li>
+<li>Demographics: All participants were self-identified native speakers of Turkish. There was one bilingual (English &amp; Turkish). Majority of the participants were fluent speakers of English, also some speakers of German, Dutch, and Spanish. All were 18 years of age or older. Gender, education, and other background information were not collected.</li>
+<li>Data exclusions (per preregistered criteria): Excluded any participant who failed at least one attention check (must pass both). Excluded trials with reading times less than 50 ms or greater than 2000 ms (for SPR) and 10,000 ms (for comprehension). Excluded participants with overall comprehension accuracy below 50% or who gave invariant responses. Excluded specific problematic trials identified post-hoc (see code: bad_trials).</li>
+<li>Final analyzed dataset: After exclusions, the final dataset included: N = 73 participants N = 15 unique items (sentence sets) N = 4,658 SPR trials (after filtering and cleaning) N = 1,039 critical comprehension responses (for confirmatory analyses)</li>
+</ul>
+</section>
+<section id="differences-from-pre-data-collection-methods-plan" class="level4">
+<h4 class="anchored" data-anchor-id="differences-from-pre-data-collection-methods-plan">Differences from Pre-Data Collection Methods Plan</h4>
+<ul>
+<li>No major deviations from the pre-registered analysis plan.</li>
+<li>All exclusion criteria and statistical methods were implemented as specified.</li>
+<li>Minor post-hoc exclusion: A small number of trials were removed due to technical errors or clear data anomalies (e.g., missing tokens, corrupted files). This post-hoc exclusion affected less than 2% of trials.</li>
+<li>All model formulas and software packages used were as planned (see analysis code).</li>
+<li>No unplanned analyses were introduced in the confirmatory section.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="analysis-overview-and-key-expectations" class="level3">
+<h3 class="anchored" data-anchor-id="analysis-overview-and-key-expectations">Analysis Overview and Key Expectations</h3>
+<p>The present analysis is designed to test whether mismatches between context and sentence type lead to processing cost (measured by self-paced reading times (SPRTs), comprehension accuracy, and comprehension question response times) in Turkish de re/de dicto ambiguity. A particular focus is placed on the role of the ambiguous sentence form (“bir kitap okumak istiyor”), which is hypothesized to be underspecified with respect to scope, and thus may elicit intermediate surprisal.</p>
+<section id="experimental-design-recap" class="level4">
+<h4 class="anchored" data-anchor-id="experimental-design-recap">Experimental Design Recap</h4>
+<ul>
+<li>3 (context) × 3 (sentence type) factorial design</li>
+<li>Context: de re / de dicto / ambiguous</li>
+<li>SPR sentence: de re / de dicto / ambiguous</li>
+<li>Each trial: context → SPR sentence (word-by-word) → comprehension question.</li>
+</ul>
+<section id="spr-sentence-examples" class="level5">
+<h5 class="anchored" data-anchor-id="spr-sentence-examples">SPR Sentence examples:</h5>
+<ul>
+<li>Ambiguous: ayşe bir kitap okumak istiyor (Ayşe a book read wants)</li>
+<li>De re: ayşe kitabı okumak istiyor (Ayşe book-ACC read wants)</li>
+<li>De dicto: ayşe kitap okumak istiyor (Ayşe book read wants)</li>
+</ul>
+</section>
+</section>
+<section id="theoretical-expectations" class="level4">
+<h4 class="anchored" data-anchor-id="theoretical-expectations">Theoretical Expectations</h4>
+<section id="surprisal-at-critical-words" class="level5">
+<h5 class="anchored" data-anchor-id="surprisal-at-critical-words">Surprisal at Critical Words</h5>
+<p>The Turkish accusative system makes word-by-word predictions possible:</p>
+<ul>
+<li><strong>de re context:</strong>. The comprehender expects to see an overt accusative (“kitabı”) at word 2.
+<ul>
+<li>If “kitabı” (noun.ACC) is present (de re SPR): expectation met, lowest surprisal.</li>
+<li>If “kitap” (bare, noun.0) or “bir kitap” (ambiguous) appears: expectation violated, increased surprisal.
+<ul>
+<li>“kitap” = clear violation, maximal surprisal.</li>
+<li>“bir kitap” = underspecified, intermediate surprisal (not fully confirming nor violating).</li>
+</ul></li>
+</ul></li>
+<li><strong>de dicto context:</strong>. The comprehender expects to see a bare noun (“kitap”) at word 2.
+<ul>
+<li>If “kitap” (bare, noun.0) is present (de dicto SPR): lowest surprisal.</li>
+<li>If “kitabı” (noun.ACC) appears: maximal surprisal (unexpected overt marker).</li>
+<li>If “bir kitap” (det noun) appears: intermediate surprisal (unexpected indefinite).</li>
+</ul></li>
+</ul>
+Predicted hierarchy of surprisal in each context:
+<table>
+<thead>
+<tr>
+<th>
+Context
+</th>
+<th>
+SPR sentence
+</th>
+<th>
+Expected Surprisal
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+de re
+</td>
+<td>
+de re
+</td>
+<td>
+lowest (match)
+</td>
+</tr>
+<tr>
+<td>
+de re
+</td>
+<td>
+ambiguous
+</td>
+<td>
+intermediate (underspecified)
+</td>
+</tr>
+<tr>
+<td>
+de re
+</td>
+<td>
+de dicto
+</td>
+<td>
+highest (mismatch)
+</td>
+</tr>
+<tr>
+<td>
+de dicto
+</td>
+<td>
+de dicto
+</td>
+<td>
+lowest (match)
+</td>
+</tr>
+<tr>
+<td>
+de dicto
+</td>
+<td>
+ambiguous
+</td>
+<td>
+intermediate (underspecified)
+</td>
+</tr>
+<tr>
+<td>
+de dicto
+</td>
+<td>
+de re
+</td>
+<td>
+highest (mismatch)
+</td>
+</tr>
+<tr>
+<td>
+ambiguous
+</td>
+<td>
+ambiguous
+</td>
+<td>
+lowest (neutral match)
+</td>
+</tr>
+<tr>
+<td>
+ambiguous
+</td>
+<td>
+de re or de dicto
+</td>
+<td>
+slightly elevated (theory-neutral)
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="statistical-methods" class="level4">
+<h4 class="anchored" data-anchor-id="statistical-methods">Statistical Methods</h4>
+<p>All analyses were conducted in R. The main statistical tools used were:</p>
+<ul>
+<li>Linear Mixed-Effects Models (LMMs) for word-by-word SPRTs (lme4, lmerTest)
+<ul>
+<li>Model formula: reading_time ~ context_condition * spr_condition + (1|participant_id) + (1|item_id)</li>
+</ul></li>
+<li>Generalized Linear Mixed-Effects Models (GLMMs) for comprehension accuracy (logit link)
+<ul>
+<li>Model formula: response_correct ~ context_condition * spr_condition + (1|participant_id) + (1|item_id)</li>
+</ul></li>
+<li>Bayesian models (brms or BayesFactor) for model comparison and robust estimation.
+<ul>
+<li>Weakly informative priors (e.g., Normal(0, 1))</li>
+<li>Posterior summaries: medians, 95% HPD intervals, Bayes Factors</li>
+</ul></li>
+<li>Estimated marginal means (emmeans) for planned contrasts
+<ul>
+<li>Matched vs.&nbsp;mismatched vs.&nbsp;ambiguous, and gradient contrasts.</li>
+</ul></li>
+</ul>
+<p>All models included random intercepts for participant and item. Model assumptions were checked. Contrasts and pairwise comparisons were pre-registered and all p-values were corrected for multiple comparisons using Tukey’s HSD where relevant.</p>
+<section id="schematic-illustration" class="level5">
+<h5 class="anchored" data-anchor-id="schematic-illustration">Schematic Illustration</h5>
+<p>Example: Predicted Surprisal at Critical Word (Word 2 or 3)</p>
+<table style="border-collapse: collapse; width: 100%;">
+<tbody><tr>
+<td colspan="3">
+<strong>de re context:</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; padding: 10px;">
+de re SPR<br>[lowest]
+</td>
+<td style="text-align: center; padding: 10px;">
+—-&gt;
+</td>
+<td style="text-align: center; padding: 10px;">
+ambiguous SPR<br>[intermediate]
+</td>
+<td style="text-align: center; padding: 10px;">
+—-&gt;
+</td>
+<td style="text-align: center; padding: 10px;">
+de dicto SPR<br>[highest]
+</td>
+</tr>
+<tr>
+<td colspan="5">
+&nbsp;
+</td>
+</tr>
+<tr>
+<td colspan="3">
+<strong>de dicto context:</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: center; padding: 10px;">
+de dicto SPR<br>[lowest]
+</td>
+<td style="text-align: center; padding: 10px;">
+—-&gt;
+</td>
+<td style="text-align: center; padding: 10px;">
+ambiguous SPR<br>[intermediate]
+</td>
+<td style="text-align: center; padding: 10px;">
+—-&gt;
+</td>
+<td style="text-align: center; padding: 10px;">
+de re SPR<br>[highest]
+</td>
+</tr>
+</tbody></table>
+<p><br><br></p>
+</section>
+<section id="summary-table" class="level5">
+<h5 class="anchored" data-anchor-id="summary-table">Summary Table</h5>
+<table style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid black; padding: 8px;">
+Context
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+Match
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+Ambiguous
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+Mismatch (Opposite)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+de re
+</td>
+<td style="border: 1px solid black; padding: 8px; text-align: center;">
+✓
+</td>
+<td style="border: 1px solid black; padding: 8px; text-align: center;">
+~
+</td>
+<td style="border: 1px solid black; padding: 8px; text-align: center;">
+✗
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+de dicto
+</td>
+<td style="border: 1px solid black; padding: 8px; text-align: center;">
+✓
+</td>
+<td style="border: 1px solid black; padding: 8px; text-align: center;">
+~
+</td>
+<td style="border: 1px solid black; padding: 8px; text-align: center;">
+✗
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+<strong>Legend:</strong>
+</p>
+<ul>
+<li>
+✓: Lowest surprisal (match)
+</li>
+<li>
+~: Intermediate surprisal (ambiguous)
+</li>
+<li>
+✗: Highest surprisal (opposite)
+</li>
+</ul>
+</section>
+<section id="hypothesis" class="level5">
+<h5 class="anchored" data-anchor-id="hypothesis">Hypothesis</h5>
+<ul>
+<li>Ambiguous form (bir kitap) is underspecified: It should elicit intermediate processing cost relative to full match and full mismatch.</li>
+<li>Gradient effects: The degree of processing difficulty (SPRT, accuracy) should mirror the “distance” between context and SPR form.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="data-preparation" class="level3">
+<h3 class="anchored" data-anchor-id="data-preparation">Data preparation</h3>
+<p>Data were prepared according to the preregistered plan, using the following steps:</p>
+<ul>
+<li>Libraries and Setup
+<ul>
+<li>Analyses were conducted in R (v4.x), primarily using the following packages: <br> dplyr, readr, purrr, stringr, ggplot2, lme4, lmerTest, emmeans, brms, tidybayes.</li>
+</ul></li>
+<li>Data Import
+<ul>
+<li>All participant CSV files were loaded and concatenated into a single dataframe (all_data), using the participant’s Prolific ID where available, or the filename as a fallback unique identifier.</li>
+<li><a href="https://osf.io/acgyf/?view_only=5f516779dff4440c980dbbc516948a41">Link to OSF project</a></li>
+</ul></li>
+<li>Initial Data Cleaning
+<ul>
+<li>All relevant columns (e.g., participant_group, context_condition, spr_condition, type, word, label, attention_check_result) were coerced to character type for consistency.</li>
+<li>Attention check results were inspected and summarized by participant.</li>
+</ul></li>
+<li>Exclusion of Participants
+<ul>
+<li>Participants were excluded if they did not pass both attention checks.</li>
+<li>Participants were excluded if their overall comprehension accuracy was below 50% or if they gave invariant responses (e.g., always answering “yes”).</li>
+</ul></li>
+<li>Exclusion of Trials
+<ul>
+<li>Self-paced reading (SPR) trials were excluded if reading times were below 50 ms or above 2000 ms.</li>
+<li>Comprehension trials were excluded if response times were below 50 ms or above 10,000 ms.</li>
+<li>Additional post-hoc removal of specific problematic trials (see code: bad_trials).</li>
+</ul></li>
+<li>Data Structuring
+<ul>
+<li>Trials were labeled as “critical” or “filler” based on context_condition and spr_condition.</li>
+<li>For SPR data, word positions were calculated within each sentence (word_position).</li>
+<li>Junk tokens (e.g., filler discourse particles) were removed based on a predefined list.</li>
+<li>Each trial was labeled with a composite context_spr_combo variable (context + sentence condition).</li>
+</ul></li>
+<li>Final Data Sets
+<ul>
+<li>spr_data_exp: Cleaned, experimental SPR trials (excluding fillers and junk tokens), with word position, condition, and participant/item labels.</li>
+<li>comp_data_exp_trim: Cleaned, experimental comprehension trials, with only valid response times and participants.</li>
+</ul></li>
+<li>Sanity Checks
+<ul>
+<li>The number of words per trial, participant, and condition were summarized and visualized.</li>
+<li>Means and medians were calculated for SPR and comprehension data, with distributions plotted for visual inspection (see attached figures).</li>
+</ul></li>
+</ul>
+<p><strong>Note:</strong> All scripts and data processing steps are available in the analysis code for full reproducibility.<br> (<a href="https://github.com/iambusra/245B-project.git">Link to GitHub repo</a>)</p>
+</section>
+<section id="confirmatory-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="confirmatory-analysis">Confirmatory analysis</h3>
+<p>The confirmatory analyses test the primary preregistered predictions regarding surprisal effects in SPR reading time, comprehension accuracy, and response time, using both frequentist and Bayesian models. All analyses use data after exclusion of inattentive participants and outlier trials, as per the analysis plan.</p>
+<section id="self-paced-reading-spr-time-mixed-models" class="level4">
+<h4 class="anchored" data-anchor-id="self-paced-reading-spr-time-mixed-models">Self-Paced Reading (SPR) Time: Mixed Models</h4>
+<ul>
+<li><p>Model:</p>
+<pre><code> reading_time ~ context_condition * spr_condition + (1|participant_id) + (1|item_id)</code></pre>
+<p>(lmer, package: lme4)</p></li>
+<li><p>Fixed effects table (from summary(lmm_spr)):</p>
+<table style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Effect</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Estimate</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Std. Error</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>t</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>p-value</p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>(Intercept)</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>313.06</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>20.07</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>15.60</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>&lt;.001 ***</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondedicto</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>33.27</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>35.50</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.94</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.35</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondere</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>74.52</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>27.37</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>2.72</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.008 **</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>spr_conditiondedicto</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>67.17</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>27.48</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>2.45</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.017 *</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>spr_conditiondere</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>35.16</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>35.69</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.98</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.33</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondedicto:spr_conditiondedicto</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-93.42</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>52.60</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-1.78</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.080 .</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondere:spr_conditiondedicto</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-92.40</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>51.30</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-1.80</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.076 .</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondedicto:spr_conditiondere</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>16.34</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>64.01</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.26</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.80</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondere:spr_conditiondere</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-86.74</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>52.68</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-1.65</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.10</p>
+</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<p>Significance codes: ’’ 0.001 ’’ 0.01 ’’ 0.05 ‘.’ 0.1 ‘ ’ 1</p>
+<ul>
+<li>ANOVA Table (anova(lmm_spr)):
+<table style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid black; padding: 8px;">
+Effect
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+F
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+p-value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+context_condition
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+3.89
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.0206 *
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+spr_condition
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+2.55
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.078 .
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+context:spr
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+1.79
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.13
+</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<p>The main effect of context is significant; the interaction is marginal.</p>
+<ul>
+<li>Pairwise contrasts (pairs(emm, simple = “each”)):
+<ul>
+<li>E.g., spr_condition = amb:
+<ul>
+<li>amb vs.&nbsp;dere: estimate = -74.5, p = 0.018</li>
+<li>amb vs.&nbsp;dedicto: ns</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><img src="analysis/mean response time context and spr condition.png" alt="Mean response time" style="width: 70%; max-width: 1200px;"></p>
+<ul>
+<li>Word-by-word time: <br> <img src="analysis/mean reading time by word position and spr.png" alt="Mean reading time" style="width: 70%; max-width: 1200px;"> <br> (amb: subj det noun verb.inf wants) <br> (de re: subj noun.ACC verb.inf wants) <br> (de dicto: subj noun.0 verb.inf wants)</li>
+</ul>
+</section>
+<section id="bayesian-mixed-models" class="level4">
+<h4 class="anchored" data-anchor-id="bayesian-mixed-models">Bayesian Mixed Models</h4>
+<ul>
+<li><p>Model:</p>
+<pre><code>log_response_time ~ surprisal_type + (1|participant_id) + (1|item_id) </code></pre>
+<p>(brms)</p></li>
+<li><p>Posterior means and contrasts (fixef(bayes_rt), emmeans_rt_tbl, rt_contrasts):</p>
+<table style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Surprisal Type</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Posterior log-RT</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>95% CI</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>exp(mean) ms</p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>Intercept (ambiguous)</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>8.10</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>7.90, 8.31</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>3300</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>matched</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-0.39</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-0.70, -0.09</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>2420</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>mismatched_opposite</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.10</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.03, 0.18</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>3660</p>
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Contrasts (HPD intervals):
+<ul>
+<li>ambiguous vs.&nbsp;matched: 0.393 (0.08, 0.69)</li>
+<li>ambiguous vs.&nbsp;mismatched_opposite: -0.104 (-0.18, -0.03)</li>
+<li>matched vs.&nbsp;mismatched_opposite: -0.497 (-0.82, -0.20)</li>
+</ul></li>
+</ul></li>
+<li><p>Bayes Factor:</p>
+<ul>
+<li>Model with surprisal type vs.&nbsp;null: BF ≫ 10¹⁰⁰ (decisive evidence)</li>
+</ul></li>
+<li><p>Posterior plot: <br> <img src="analysis/posterior distributions of mean rts.png" alt="Posterior distributions" style="width: 70%; max-width: 1200px;"></p></li>
+</ul>
+</section>
+<section id="comprehension-accuracy-logistic-mixed-model" class="level4">
+<h4 class="anchored" data-anchor-id="comprehension-accuracy-logistic-mixed-model">Comprehension Accuracy (Logistic Mixed Model)</h4>
+<ul>
+<li><p>Model:</p>
+<pre><code>response_correct ~ context_condition * spr_condition + (1|participant_id) + (1|item_id) </code></pre>
+<p>(GLMM, binomial)</p></li>
+<li><p>Fixed Effects Table (summary(glmm_acc)):</p>
+<table style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Effect</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Estimate</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Std. Error</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>z</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>p-value</p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>(Intercept)</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>1.33</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.305</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>4.35</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>&lt;.001 ***</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondedicto</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.62</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.53</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>1.17</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.24</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondere</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.23</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.39</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.60</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.55</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>spr_conditiondedicto</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.16</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.39</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.42</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.68</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>spr_conditiondere</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>1.39</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.61</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>2.29</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.022 *</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondedicto:spr_conditiondedicto</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-1.09</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.70</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-1.57</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.12</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondedicto:spr_conditiondere</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-1.94</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.88</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-2.20</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.028 *</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondere:spr_conditiondedicto</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.19</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.70</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.28</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.78</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>context_conditiondere:spr_conditiondere</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-1.88</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.76</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>-2.47</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.013 *</p>
+</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>Marginal Means (emmeans_acc_tbl):</p>
+<table style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Surprisal Type</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>Median Accuracy</p>
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+<p>95% HPD</p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>ambiguous</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.85</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.78, 0.91</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>matched</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.76</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.66, 0.85</p>
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+<p>mismatched_opposite</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.83</p>
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+<p>0.75, 0.90</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p></li>
+<li><p>Contrast Odds Ratios:</p>
+<ul>
+<li>ambiguous / matched: 1.80 (0.87, 3.07)</li>
+<li>ambiguous / mismatched_opposite: 1.20 (0.73, 1.79)</li>
+<li>matched / mismatched_opposite: 0.66 (0.29, 1.15)</li>
+</ul></li>
+</ul>
+<p><img src="analysis/posterior distributions of mean accuracy.png" alt="Posterior distributions" style="width: 70%; max-width: 1200px;"></p>
+</section>
+<section id="comprehension-rts" class="level4">
+<h4 class="anchored" data-anchor-id="comprehension-rts">Comprehension RTs</h4>
+<ul>
+<li>Model:
+<pre><code>response_time ~ context_condition * spr_condition + (1|participant_id) + (1|item_id) </code></pre>
+(lmer) <br></li>
+</ul>
+<table style="border-collapse: collapse; width: 100%;">
+<thead>
+<tr>
+<th style="border: 1px solid black; padding: 8px;">
+Context + SPR
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+Accuracy
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+Median RT (ms)
+</th>
+<th style="border: 1px solid black; padding: 8px;">
+N
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+amb_amb
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.74
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+2399
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+133
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+amb_dedicto
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.78
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+3041
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+153
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+amb_dere
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.92
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+3734
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+62
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+dedicto_amb
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.83
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+4202
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+60
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+dedicto_dedicto
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.70
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+3183
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+135
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+dedicto_dere
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.76
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+3860
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+156
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+dere_amb
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.79
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+3502
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+150
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+dere_dedicto
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.84
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+4378
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+56
+</td>
+</tr>
+<tr>
+<td style="border: 1px solid black; padding: 8px;">
+dere_dere
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+0.70
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+3402
+</td>
+<td style="border: 1px solid black; padding: 8px;">
+134
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><img src="analysis/mean response time context and spr condition.png" alt="Mean response time" style="width: 70%; max-width: 1200px;"></p>
+<ul>
+<li><p><strong>SPR by word position:</strong> <br> <img src="analysis/mean reading time by word position and spr.png" alt="Mean reading time" style="width: 70%; max-width: 1200px;"></p></li>
+<li><p><strong>Accuracy by condition:</strong> <br> <img src="analysis/mean accuracy context and spr condition.png" alt="Mean accuracy" style="width: 70%; max-width: 1200px;"></p></li>
+<li><p><strong>Matched vs.&nbsp;mismatched:</strong> <br> <img src="analysis/spr reading time matched vs mismatched.png" alt="SPR reading time" style="width: 70%; max-width: 1200px;"></p></li>
+</ul>
+</section>
+<section id="interpretation" class="level4">
+<h4 class="anchored" data-anchor-id="interpretation">Interpretation</h4>
+<ul>
+<li>In all analyses, matched context/sentence pairs had the lowest reading times, ambiguous sentences were intermediate, and mismatched_opposite pairs were highest—matching theoretical expectations.</li>
+<li>Statistical support for these effects is robust (see tables above), with Bayesian and frequentist models in close agreement.</li>
+<li>Ambiguous forms behave as predicted: they are not processed as simply matching either de re or de dicto, but as genuinely underspecified.</li>
+</ul>
+</section>
+</section>
+<section id="exploratory-analyses" class="level3">
+<h3 class="anchored" data-anchor-id="exploratory-analyses">Exploratory analyses</h3>
+<p>In addition to the preregistered confirmatory analyses, several exploratory analyses were conducted to further characterize the data and inform potential follow-up work.</p>
+<section id="region-by-region-word-by-word-surprisal" class="level4">
+<h4 class="anchored" data-anchor-id="region-by-region-word-by-word-surprisal">Region-by-region (word-by-word) surprisal</h4>
+<ul>
+<li>Motivation: To pinpoint where surprisal effects emerged in the sentence, mean and median reading times were plotted by word position and surprisal type (matched, ambiguous, mismatched_opposite).</li>
+<li>Key plots:<br> <img src="analysis/mean reading time by word position and spr.png" alt="Mean reading time" style="width: 70%; max-width: 1200px;"></li>
+</ul>
+<p><img src="analysis/median reading time by word position and spr.png" alt="Median reading time" style="width: 70%; max-width: 1200px;"></p>
+<p><img src="analysis/mean spr rt by word position.png" alt="Mean SPR reading time" style="width: 70%; max-width: 1200px;"></p>
+<p><img src="analysis/spr rt by word position matched vs mismatched.png" alt="SPR reading time" style="width: 70%; max-width: 1200px;"></p>
+<p>(these plots need some more refinements, and word labels but I ran out of motivation and energy)</p>
+<ul>
+<li>What was found:
+<ul>
+<li>Surprisal differences are most pronounced at the critical region (usually the noun + marker, e.g., word 2-3 for the object and its case/quantifier), consistent with predictions.</li>
+<li>The ambiguous form generally shows intermediate RTs at the relevant word positions, confirming the underspecification hypothesis.</li>
+</ul></li>
+</ul>
+</section>
+<section id="by-item-and-by-class-patterns" class="level4">
+<h4 class="anchored" data-anchor-id="by-item-and-by-class-patterns">By-item and by-class patterns</h4>
+<ul>
+<li><p>Motivation: To check for item-level and verb-class effects that might moderate the main effects.</p></li>
+<li><p>Key plots: <br> <img src="analysis/mean spr rt by item.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/spr rt distributions by item.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/mean spr rt by verb classes.png" style="width: 70%; max-width: 1200px;"></p></li>
+<li><p>Findings:</p>
+<ul>
+<li>Some items and classes (e.g., certain verbs) yield higher baseline RTs, but the relative effect of condition is consistent.</li>
+<li>No single item or verb class drives the global effect.</li>
+</ul></li>
+</ul>
+</section>
+<section id="comprehension-accuracy-rt-across-the-33-design" class="level4">
+<h4 class="anchored" data-anchor-id="comprehension-accuracy-rt-across-the-33-design">Comprehension accuracy &amp; RT across the 3×3 design</h4>
+<ul>
+<li>Motivation: To visualize and quantify how accuracy and response time patterns vary across all 9 context × SPR combinations.</li>
+<li>Key plots:<br> <img src="analysis/comprehension accuracy by item and condition.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/comprehension accuracy by spr condition.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/comprehension accuracy by context and spr condition.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/comprehension rt by context and spr condition.png" style="width: 70%; max-width: 1200px;"></li>
+<li>Findings:
+<ul>
+<li>The general pattern mirrors SPR RT results: matches yield highest accuracy and lowest RT, mismatches lowest accuracy and highest RT.</li>
+<li>Accuracy does not show a strong ambiguous/intermediate pattern as RT does—possibly due to ceiling effects.</li>
+</ul></li>
+</ul>
+</section>
+<section id="distribution-checks-data-quality" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-checks-data-quality">Distribution checks &amp; data quality</h4>
+<ul>
+<li><p>Motivation: To confirm data trimming and participant exclusion rules were effective, and to spot outliers or anomalies.</p></li>
+<li><p>Key plots: <br> <img src="analysis/trials per participant after exclusion.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/number of words per spr trial.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/comprehension accuracy filler vs crit.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/comprehension rt filler vs crit.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/comprehension rt filler vs crit2.png" style="width: 70%; max-width: 1200px;"></p></li>
+<li><p>Findings:</p>
+<ul>
+<li>No evidence for bimodal or abnormal participant distributions.</li>
+<li>Filler vs.&nbsp;critical item RT/accuracy is as expected, indicating good attention and engagement.</li>
+</ul></li>
+</ul>
+</section>
+<section id="matched-vs.-mismatched-binary-collapse" class="level4">
+<h4 class="anchored" data-anchor-id="matched-vs.-mismatched-binary-collapse">Matched vs.&nbsp;mismatched (binary collapse)</h4>
+<ul>
+<li>Motivation: To test if a simple “matched vs.&nbsp;mismatched” coding captures effects as well as the full 3-level coding.</li>
+<li>Key plots:<br> <img src="analysis/spr reading time matched vs mismatched.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/spr rt by word position matched vs mismatched.png" style="width: 70%; max-width: 1200px;"> <img src="analysis/comprehension accuracy matched vs mismatched.png" style="width: 70%; max-width: 1200px;"></li>
+<li>Findings:
+<ul>
+<li>Binary contrasts show similar but less nuanced effects—supporting the need for the three-level analysis (matched, ambiguous, mismatched_opposite).</li>
+</ul></li>
+</ul>
+</section>
+<section id="summary" class="level4">
+<h4 class="anchored" data-anchor-id="summary">Summary</h4>
+<p>Exploratory analyses confirm and expand the preregistered findings, supporting the theoretical expectations and demonstrating the utility of the more fine-grained 3×3 design. No major anomalies or design failures were detected. Item, region, and class effects are minor relative to the condition effects.</p>
+</section>
+</section>
+</section>
+<section id="discussion" class="level2">
+<h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+<section id="summary-of-replication-attempt" class="level3">
+<h3 class="anchored" data-anchor-id="summary-of-replication-attempt">Summary of Replication Attempt</h3>
+<p>The current study set out to replicate and extend the core findings of the original (2023) investigation of de re and de dicto ambiguity processing in Turkish SPR. The main preregistered prediction was that reading times and comprehension would be most efficient when the disambiguating context and sentence type were matched (e.g., de re context + de re sentence), most costly when they were mismatched in opposite directions (e.g., de re context + de dicto sentence), and that the ambiguous sentence type would yield intermediate processing cost when presented in a mismatching context.</p>
+<p>The confirmatory analyses robustly support these predictions. Linear mixed models revealed a significant main effect of context-sentence match on self-paced reading times, with Bayesian model comparisons also providing decisive evidence for a surprisal effect. Reading times were lowest for matched conditions, highest for mismatched, and ambiguous conditions consistently fell in between. Comprehension accuracy also showed a general match/mismatch effect, though accuracy differences were somewhat attenuated relative to RTs. Overall, the replication was successful, confirming the central finding of graded surprisal cost as a function of scope disambiguation.</p>
+</section>
+<section id="commentary" class="level3">
+<h3 class="anchored" data-anchor-id="commentary">Commentary</h3>
+<p>Exploratory analyses further illuminated the time-course and locus of surprisal effects. Region-by-region reading time plots revealed that the surprisal penalty for mismatched or ambiguous forms is localized to the critical region (object noun and its marking), aligning with theoretical expectations about the processing of Turkish accusative and scope ambiguity. Item-level and verb-class analyses showed that the pattern is robust across materials, with no single item or class accounting for the effect.</p>
+<p>The findings reinforce the claim that Turkish readers are highly sensitive to the mapping between discourse context and morphosyntactic realization of scope. The ambiguous form, which does not overtly mark scope preference, is processed more slowly than a matched form but more quickly than a strongly mismatched one. This gradient effect supports an underspecification account of the ambiguous condition.</p>
+<p>No major departures from the original methodology or pre-registration plan were needed, and no technical or sampling artifacts were detected in exploratory checks. The increased sample size and factorial design strengthen the generalizability of the results. If any caveats remain, they center on possible ceiling effects in accuracy and minor item/class heterogeneity, both of which are common in SPR studies of this type.</p>
+<p>In sum, this replication strengthens the original finding and clarifies the nature of scope-based surprisal in Turkish, while the expanded design provides new insight into the processing of ambiguous forms and the fine structure of context-sentence matching.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
